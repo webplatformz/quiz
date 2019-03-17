@@ -28,9 +28,6 @@ class App extends Component {
                         }}
                     </Query>
                 </header>
-                <div>
-
-                </div>
             </div>
         );
     }
