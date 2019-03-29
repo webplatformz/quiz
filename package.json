@@ -9,7 +9,8 @@
     "build:frontend": "cd frontend && npm run build",
     "build:server": "tsc -p server",
     "build": "npm run build:server && npm run build:frontend",
-    "start": "node server/build/app.js"
+    "start": "node server/build/app.js",
+    "postinstall": "npm install --prefix frontend"
   },
   "license": "ISC",
   "dependencies": {
