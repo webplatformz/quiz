@@ -10,7 +10,7 @@ import {ApolloLink} from 'apollo-link';
 import {ApolloProvider} from "react-apollo";
 
 const httpLink: ApolloLink = createHttpLink({
-    uri: 'http://localhost:4000'
+    uri: '/graphql'
 });
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
