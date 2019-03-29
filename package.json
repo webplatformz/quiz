@@ -6,9 +6,11 @@
   "scripts": {
     "test": "npm test",
     "tsc": "tsc",
+    "clean": "rimraf frontend/build server/build",
     "build:frontend": "cd frontend && npm run build",
     "build:server": "tsc -p server",
-    "build": "npm run build:server && npm run build:frontend",
+    "prebuild": "npm run clean",
+    "build": "npm-run-all --parallel build:*",
     "start": "node server/build/app.js",
     "postinstall": "npm install --prefix frontend"
   },
@@ -22,6 +24,8 @@
     "@types/express": "^4.16.1",
     "@types/node": "^11.11.3",
     "@types/ws": "^6.0.1",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^2.6.3",
     "typescript": "^3.3.3333"
   }
 }
