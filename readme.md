@@ -6,7 +6,7 @@
 - [ ] How To Run 
 - [ ] Heroku Deployment
 - [x] Commit to repository
-- [ ] Greenkeeper
+- [x] Greenkeeper
 
 
 https://github.com/prisma/graphql-yoga/issues/421
