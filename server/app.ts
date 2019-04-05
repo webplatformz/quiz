@@ -2,7 +2,13 @@ import {GraphQLServer} from 'graphql-yoga'
 import resolvers from './resolvers';
 import express = require('express');
 import path = require('path');
+import MongoClient from "./persistance/MongoClient";
 
+// Connect to MongoDB
+const mongoUri = <string>process.env.MONGODB_URI;
+const mongoClient = new MongoClient();
+mongoClient.connectDb(mongoUri)
+    .then(() => mongoClient.initMockData());
 
 const server = new GraphQLServer({
     typeDefs: './server/schema.graphql',

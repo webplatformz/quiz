@@ -1,7 +1,11 @@
 import {Context} from "graphql-yoga/dist/types";
+import Meta, {IMeta} from "../persistance/Meta";
 
 export default {
     Query: {
-        info: (parent?: any, args?: any, context?: Context) => `Hello from GraphQL`,
+        info: async (parent?: any, args?: any, context?: Context) => {
+            const meta = <IMeta>await Meta.findOne();
+            return `Hello from GraphQL and ${meta.name} v${meta.version}`;
+        },
     }
 }
