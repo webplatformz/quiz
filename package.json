@@ -12,7 +12,8 @@
     "start": "node server/build/app.js",
     "install:frontend": "npm install --prefix frontend",
     "install:server": "npm install --prefix server",
-    "postinstall": "npm-run-all install:*"
+    "postinstall": "npm-run-all install:*",
+    "heroku-postbuild": "cd server && npm install && npm run build && cd ../frontend && npm install && npm run build"
   },
   "license": "ISC",
   "dependencies": {},
