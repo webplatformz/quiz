@@ -1,3 +1,7 @@
+## Circle CI Status
+[![CircleCI](https://circleci.com/gh/webplatformz/quiz.svg?style=svg)](https://circleci.com/gh/webplatformz/quiz)
+
+## To Do
 - [ ] GraphQL mit Typen
 - [x] React App mit Typescript
 - [ ] Test für Backend
