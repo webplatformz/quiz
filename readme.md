@@ -4,9 +4,6 @@
 - [ ] Test für Frontend
 - [ ] Mongo DB Abfrage
 - [ ] How To Run 
-- [ ] Heroku Deployment
+- [x] Heroku Deployment
 - [x] Commit to repository
 - [ ] Greenkeeper
-
-
-https://github.com/prisma/graphql-yoga/issues/421
