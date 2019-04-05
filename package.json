@@ -5,31 +5,21 @@
   "main": "server/index.ts",
   "scripts": {
     "test": "npm-run-all --parallel test:*",
-    "test:backend": "jest",
-    "tsc": "tsc",
+    "test:backend": "npm test --prefix server",
     "clean": "rimraf frontend/build server/build",
-    "build:frontend": "cd frontend && npm run build",
-    "build:server": "tsc -p server",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:server": "npm run build --prefix server",
     "prebuild": "npm run clean",
     "build": "npm-run-all --parallel build:*",
     "start": "node server/build/app.js",
-    "postinstall": "npm install --prefix frontend"
+    "install:frontend": "npm install --prefix frontend",
+    "install:server": "npm install --prefix server",
+    "postinstall": "npm-run-all --parallel install:*"
   },
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.16.4",
-    "graphql-yoga": "^1.17.4"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.23",
-    "@types/express": "^4.16.1",
-    "@types/jest": "^24.0.11",
-    "@types/node": "^11.11.3",
-    "@types/ws": "^6.0.1",
-    "jest": "^24.7.1",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^2.6.3",
-    "ts-jest": "^24.0.1",
-    "typescript": "^3.3.3333"
+    "rimraf": "^2.6.3"
   }
 }
