@@ -6,20 +6,18 @@
   "scripts": {
     "test": "npm-run-all --parallel test:*",
     "test:backend": "npm test --prefix server",
-    "clean": "rimraf frontend/build server/build",
     "build:frontend": "npm run build --prefix frontend",
     "build:server": "npm run build --prefix server",
-    "prebuild": "npm run clean",
     "build": "npm-run-all --parallel build:*",
     "start": "node server/build/app.js",
     "install:frontend": "npm install --prefix frontend",
     "install:server": "npm install --prefix server",
-    "postinstall": "npm-run-all --parallel install:*"
+    "postinstall": "npm-run-all install:*"
   },
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
-    "rimraf": "^2.6.3"
+    "npm-run-all": "^4.1.5"
+
   }
 }
