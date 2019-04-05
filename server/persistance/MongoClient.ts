@@ -11,12 +11,12 @@ export default class MongoClient {
             .catch((error) => console.log("Connection failed: ", error));
     }
 
-    public async initMockData() {
+    public async initDummyData() {
         await this.dropCollections([Meta]);
-        await this.addMetaMock();
+        await this.addMetaDummy();
     }
 
-    private async addMetaMock() {
+    private async addMetaDummy() {
         const meta = new Meta({
             name: "Quiz-DB",
             version: "1.0"

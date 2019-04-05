@@ -8,7 +8,7 @@ import MongoClient from "./persistance/MongoClient";
 const mongoUri = <string>process.env.MONGODB_URI;
 const mongoClient = new MongoClient();
 mongoClient.connectDb(mongoUri)
-    .then(() => mongoClient.initMockData());
+   .then(() => mongoClient.initDummyData());
 
 const server = new GraphQLServer({
     typeDefs: './server/schema.graphql',
