@@ -4,7 +4,7 @@
   "description": "Quiz platform to create live quizzes.",
   "main": "server/index.ts",
   "scripts": {
-    "test": "npm test",
+    "test": "echo 'TODO'",
     "tsc": "tsc",
     "clean": "rimraf frontend/build server/build",
     "build:frontend": "cd frontend && npm run build",
