@@ -9,6 +9,7 @@
     "rimraf": "rimraf",
     "clean": "rimraf build",
     "build": "tsc",
+    "build:watch": "tsc -w",
     "prebuild": "npm run clean",
     "start": "node build/app.js"
   },

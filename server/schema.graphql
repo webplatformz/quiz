@@ -4,11 +4,15 @@ type Query {
 }
 
 type Mutation {
-    addQuiz(quiz: Quiz!): Quiz
+    addQuiz(input: QuizInput!): Quiz!
 }
 
 type Quiz {
     id: ID!
+    name: String!
+}
+
+input QuizInput {
     name: String!
 }
 
