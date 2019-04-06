@@ -1,14 +1,14 @@
 import {GraphQLServer} from 'graphql-yoga'
 import resolvers from './resolvers';
+import MongoClient from './persistance/MongoClient';
+import {isMongoDbEnabled} from './persistance';
 import express = require('express');
 import path = require('path');
-import MongoClient from "./persistance/MongoClient";
 
 // Connect to MongoDB
-const mongoUri = <string>process.env.MONGODB_URI;
-if(mongoUri) {
+if(isMongoDbEnabled()) {
     const mongoClient = new MongoClient();
-    mongoClient.connectDb(mongoUri)
+    mongoClient.connectDb(<string>process.env.MONGODB_URI)
         .then(() => mongoClient.initDummyData());
 } else {
     console.log(`Environment variable MONGO_URI not defined. Not connecting to MongoDB`);
