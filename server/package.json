@@ -9,7 +9,8 @@
     "rimraf": "rimraf",
     "clean": "rimraf build",
     "build": "tsc",
-    "prebuild": "npm run clean"
+    "prebuild": "npm run clean",
+    "start": "node build/app.js"
   },
   "license": "ISC",
   "dependencies": {

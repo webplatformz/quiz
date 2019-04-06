@@ -11,12 +11,12 @@ mongoClient.connectDb(mongoUri)
    .then(() => mongoClient.initDummyData());
 
 const server = new GraphQLServer({
-    typeDefs: './server/schema.graphql',
+    typeDefs: './schema.graphql',
     resolvers
 });
 
 // Use underlying express server
-server.express.use(express.static(path.join(__dirname, '../../frontend/build')));
+server.express.use(express.static(path.join(__dirname, '../frontend/build')));
 
 const options = {
     port: process.env.PORT || 4000,

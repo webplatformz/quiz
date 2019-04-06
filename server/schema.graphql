@@ -1,3 +1,25 @@
 type Query {
     info: String!
+    quizes: [Quiz!]!
+}
+
+type Mutation {
+    addQuiz(quiz: Quiz!): Quiz
+}
+
+type Quiz {
+    id: ID!
+    name: String!
+}
+
+type Question {
+    id: ID!
+    question: String!
+    answers: [Answer!]!
+}
+
+type Answer {
+    id: ID!
+    answer: String!
+    isCorrect: Boolean!
 }

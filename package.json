@@ -9,7 +9,7 @@
     "build:frontend": "npm run build --prefix frontend",
     "build:server": "npm run build --prefix server",
     "build": "npm-run-all --parallel build:*",
-    "start": "node server/build/app.js",
+    "start": "npm start --prefix server",
     "install:frontend": "npm install --prefix frontend",
     "install:server": "npm install --prefix server",
     "postinstall": "npm-run-all install:*"
