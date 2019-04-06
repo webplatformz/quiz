@@ -1,6 +1,7 @@
 import {Context} from 'graphql-yoga/dist/types';
 import {isMongoDbEnabled} from '../persistance';
 import MongoDbRepository from '../repositories/mongdb-repository';
+import {Quiz} from '../domain/quiz';
 
 export default {
     Query: {
@@ -14,9 +15,10 @@ export default {
         }
     },
     Mutation: {
-        addQuiz: async (parent: any, args: any) => {
-            console.log(JSON.stringify(args));
-            return undefined;
+        addQuiz: async (parent: any, {input}: {input: Quiz}) => {
+            console.log(JSON.stringify(input));
+            input.id = 1;
+            return input;
         }
     }
 }
