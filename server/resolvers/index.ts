@@ -1,5 +1,3 @@
-import {isMongoDbEnabled} from '../persistence';
-import MongoDbRepository from '../repositories/mongdb-repository';
 import {Quiz} from '../domain/quiz';
 
 export default {
