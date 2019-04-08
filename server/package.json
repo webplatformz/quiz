@@ -26,7 +26,7 @@
     "apollo-server": "^2.4.8",
     "apollo-server-express": "^2.4.8",
     "express": "^4.16.4",
-    "graphql": "~14.2.1",
+    "graphql": "14.1.x",
     "jest": "^24.7.1",
     "mockingoose": "^2.13.0",
     "mongoose": "^5.4.22",
@@ -34,5 +34,10 @@
     "ts-jest": "^24.0.1",
     "typescript": "^3.3.3333"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "greenkeeper": {
+    "ignore": [
+      "graphql"
+    ]
+  }
 }
