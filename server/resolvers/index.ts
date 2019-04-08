@@ -7,7 +7,7 @@ const pubsub = new PubSub();
 export default {
     Query: {
         info: async (parent?: any, args?: any) => {
-            pubsub.publish('TEST', 'something happened');
+            pubsub.publish('TEST', {onTest: 'something happened'});
             return 'Hello from GraphQL 2'
         }
     },
@@ -20,11 +20,7 @@ export default {
     },
     Subscription: {
         onTest: {
-            subscribe: () => {
-                const event = pubsub.asyncIterator(['TEST']);
-                console.log(event);
-                return 'test';
-            }
+            subscribe: () => pubsub.asyncIterator(['TEST'])
         }
     }
 }

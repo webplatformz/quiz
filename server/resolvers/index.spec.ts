@@ -27,3 +27,13 @@ test('createQuiz returns an id', () => {
     expect(result.length).toBe(6);
     expect(result).not.toBe(result2);
 });
+
+
+test('onTest subscription is triggered for info query', (done) => {
+    resolvers.Subscription.onTest.subscribe().next().then((payload: any) => {
+        expect(payload.value.onTest).toBe('something happened');
+        done();
+    });
+
+    resolvers.Query.info();
+});
