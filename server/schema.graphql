@@ -14,6 +14,8 @@ type Mutation {
 }
 
 type Subscription {
+    # TODO Delete
+    onTest: String!
     onPlayerJoined(joinId: String!) : QuizStart!
     onNextQuestion(joinId: String!): Question!
     # Returns the correct answer

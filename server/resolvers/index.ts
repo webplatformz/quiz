@@ -1,8 +1,13 @@
 import QuizRepository from '../repositories/quiz-repository';
+import {PubSub} from 'apollo-server';
+
+const pubsub = new PubSub();
+
 
 export default {
     Query: {
         info: async (parent?: any, args?: any) => {
+            pubsub.publish('TEST', {onTest: 'something happened'});
             return 'Hello from GraphQL 2'
         }
     },
@@ -11,6 +16,11 @@ export default {
             const quizId = QuizRepository.createQuiz();
             console.log(`Created quiz with ${quizId}`);
             return quizId;
+        }
+    },
+    Subscription: {
+        onTest: {
+            subscribe: () => pubsub.asyncIterator(['TEST'])
         }
     }
 }
