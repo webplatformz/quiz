@@ -1,5 +1,5 @@
 import {Context} from 'graphql-yoga/dist/types';
-import {isMongoDbEnabled} from '../persistance';
+import {isMongoDbEnabled} from '../persistence';
 import MongoDbRepository from '../repositories/mongdb-repository';
 import {Quiz} from '../domain/quiz';
 

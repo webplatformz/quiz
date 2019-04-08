@@ -1,7 +1,7 @@
 import {GraphQLServer} from 'graphql-yoga'
 import resolvers from './resolvers';
-import MongoClient from './persistance/MongoClient';
-import {isMongoDbEnabled} from './persistance';
+import MongoClient from './persistence/MongoClient';
+import {isMongoDbEnabled} from './persistence';
 import express = require('express');
 import path = require('path');
 

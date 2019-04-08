@@ -11,7 +11,6 @@ class QuizRepository {
         return this.quizes;
     }
 
-
 }
 
 export default new QuizRepository();

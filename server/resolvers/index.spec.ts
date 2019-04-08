@@ -1,6 +1,6 @@
 import mockingoose from 'mockingoose';
 import resolvers from './index';
-import Meta from "../persistance/Meta";
+import Meta from "../persistence/Meta";
 
 test('basic', async () => {
     const _doc = {

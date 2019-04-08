@@ -1,4 +1,4 @@
-import Meta, {IMeta} from '../persistance/Meta';
+import Meta, {IMeta} from '../persistence/Meta';
 
 class MongdbRepository {
 
