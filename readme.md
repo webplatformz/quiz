@@ -10,4 +10,4 @@
 - [ ] How To Run 
 - [x] Heroku Deployment
 - [x] Commit to repository
-- [ ] Greenkeeper
+- [x] Greenkeeper
