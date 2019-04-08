@@ -6,6 +6,8 @@ import path = require('path');
 import {ApolloServer} from 'apollo-server-express';
 import {gql} from 'apollo-server';
 import * as fs from 'fs';
+import http from 'http';
+
 
 // Connect to MongoDB
 if (isMongoDbEnabled()) {
@@ -33,6 +35,12 @@ const server = new ApolloServer({
 });
 server.applyMiddleware({app, path: '/graphql'});
 
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`Server is running on http://localhost:${port}/graphql`));
+
+const PORT = process.env.PORT || 4000;
+httpServer.listen(PORT, () => {
+    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
+    console.log(`🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`)
+});
