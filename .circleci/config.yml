@@ -11,3 +11,6 @@ jobs:
       - run:
           name: Production build
           command: npm run build
+      - run:
+          name: Tests
+          command: npm test
