@@ -4,16 +4,60 @@ type Query {
 }
 
 type Mutation {
-    addQuiz(input: QuizInput!): Quiz!
+    createQuiz: ID!
+    updateQuiz(input: QuizInput!): Quiz!
+    join(joinId: String!): QuizStart!
+    joinAsOperator(operatorId: String!): QuizOperator!
+    launchNextQuestion(operatorId: String!): Question!
+    # Returns the correct answer
+    answerQuestion(playerId: ID!, answerId: ID!): Answer!
+}
+
+type Subscription {
+    onPlayerJoined(joinId: String!) : QuizStart!
+    onNextQuestion(joinId: String!): Question!
+    # Returns the correct answer
+    onQuestionTimeout(operatorId: String!): Answer!
+    onRankingChanged(joinId: String!): Ranking!
+}
+
+type Ranking {
+    # Ordered list of players
+    players: [Player!]!
+    isFinalState: Boolean!
+}
+
+type QuizStart {
+    name: String!
+    joinId: String!
+    players: [Player!]!
+}
+
+type QuizOperator {
+    name: String!
+    joinId: String!
+    operatorId: String!
+}
+
+type Player {
+    id: ID!
+    name: String!
+    score: Int!
 }
 
 type Quiz {
+    # ID for Admin interface
     id: ID!
+    joinId: String!
+    operatorId: String!
     name: String!
+    questions: [Question!]!
 }
 
 input QuizInput {
+    id: ID!
     name: String!
+    questions: [QuestionInput!]!
 }
 
 type Question {
@@ -22,8 +66,17 @@ type Question {
     answers: [Answer!]!
 }
 
+input QuestionInput {
+    question: String!
+    answers: [AnswerInput!]!
+}
+
 type Answer {
     id: ID!
+    answer: String!
+    isCorrect: Boolean!
+}
+input AnswerInput {
     answer: String!
     isCorrect: Boolean!
 }
