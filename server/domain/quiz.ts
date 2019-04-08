@@ -6,7 +6,7 @@ export class Quiz {
 
     questions: Question[] = [];
 
-    constructor(public id: number, public name: string) {
+    constructor(public id: string) {
 
     }
 
