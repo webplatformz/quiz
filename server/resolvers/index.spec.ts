@@ -24,6 +24,6 @@ test('createQuiz returns an id', () => {
     const result = resolvers.Mutation.createQuiz();
     const result2 = resolvers.Mutation.createQuiz();
 
-    expect(result.length).toBe(8);
+    expect(result.length).toBe(6);
     expect(result).not.toBe(result2);
 });
