@@ -1,25 +1,16 @@
 import React from 'react'
-import {Query} from "react-apollo";
-import {gql} from "apollo-boost";
-import ServerInfo from "../pages/ServerInfo";
-
-const INFO_QUERY = gql`
-{
-    info
-}`;
+import Start from "../pages/start/Start";
+import {Route, Switch} from "react-router";
+import WaitingRoom from "../pages/quiz/WaitingRoom";
 
 const Main = () => (
     <main>
-        <Query query={INFO_QUERY}>
-            {({loading, error, data}) => {
-
-                if (loading) return <div>Fetching</div>;
-                if (error) return <div>Error</div>;
-
-
-                return <ServerInfo info={data.info}/>
-            }}
-        </Query>
+        <Switch>
+            <Route exact path='/' component={Start}/>
+            <Route path='/:joinId' component={WaitingRoom}/>
+            <Route path='/operator/:operatorId' component={WaitingRoom}/>
+            <Route path='/admin/:adminId' component={WaitingRoom}/>
+        </Switch>
     </main>
 );
 
