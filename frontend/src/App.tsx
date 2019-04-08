@@ -19,7 +19,7 @@ class App extends Component {
                     <img src={logo} className="App-logo" alt="logo"/>
 
                     <Query query={INFO_QUERY}>
-                        {({loading, error, data}) => {
+                        {({loading, error, data}: any) => {
 
                             if (loading) return <div>Fetching</div>;
                             if (error) return <div>Error</div>;
