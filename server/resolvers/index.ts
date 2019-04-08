@@ -15,7 +15,7 @@ export default {
         }
     },
     Mutation: {
-        addQuiz: async (parent: any, {input}: {input: Quiz}) => {
+        createQuiz: async (parent: any, {input}: {input: Quiz}) => {
             console.log(JSON.stringify(input));
             input.id = 1;
             return input;
