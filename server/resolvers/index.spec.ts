@@ -17,5 +17,5 @@ xtest('basic', async () => {
 test('info', async () => {
     const result = await resolvers.Query.info();
 
-    expect(result).toBe('Hello from GraphQL');
+    expect(result).toBe('Hello from GraphQL 2');
 });
