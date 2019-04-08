@@ -1,11 +1,15 @@
 import {Quiz} from '../domain/quiz';
+import {SimpleGuid} from '../util/simple-guid';
 
 class QuizRepository {
-    quizes: Quiz[] = [];
+    private quizes: Quiz[] = [];
 
-    addQuiz(quiz: Quiz) {
-        this.quizes.push(quiz);
+    createQuiz(): string {
+        const shortQuizId = SimpleGuid.shortGuid();
+        this.quizes.push(new Quiz(shortQuizId));
+        return shortQuizId;
     }
+
 
     getQuizes(): Quiz[] {
         return this.quizes;

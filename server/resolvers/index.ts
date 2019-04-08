@@ -1,4 +1,4 @@
-import {Quiz} from '../domain/quiz';
+import QuizRepository from '../repositories/quiz-repository';
 
 export default {
     Query: {
@@ -7,10 +7,10 @@ export default {
         }
     },
     Mutation: {
-        createQuiz: async (parent: any, {input}: { input: Quiz }) => {
-            console.log(JSON.stringify(input));
-            input.id = 1;
-            return input;
+        createQuiz: (parent?: any): string => {
+            const quizId = QuizRepository.createQuiz();
+            console.log(`Created quiz with ${quizId}`);
+            return quizId;
         }
     }
 }
