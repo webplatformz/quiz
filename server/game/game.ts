@@ -13,16 +13,10 @@ export class Game {
 
     }
 
-    joinAsOperator(nickname: string): QuizOperator {
-        const player = new Player(SimpleGuid.shortGuid(), nickname, 0);
-        this.state.players.push(player);
-        return new QuizOperator(player.name, this.state.joinId, this.quiz.operatorId);
-    }
-
     joinAsPlayer(joinId: string, nickname: string): QuizStart {
         const player = new Player(SimpleGuid.shortGuid(), nickname, 0);
         this.state.players.push(player);
-        if(!this.quiz.name) {
+        if (!this.quiz.name) {
             throw new Error(`The quiz with ID ${this.quiz.id} is not ready to join - it misses a name.`);
         }
         this.notifyOnPlayerJoinedSubscribers();
@@ -35,7 +29,7 @@ export class Game {
 
     private notifyOnPlayerJoinedSubscribers() {
         this.onPlayerJoinedSubscribers.forEach(subscriber => {
-            if(!this.quiz.name) {
+            if (!this.quiz.name) {
                 throw new Error(`The quiz with ID ${this.quiz.id} is not ready yet - it misses a name.`);
             }
             subscriber(new QuizStart(this.quiz.name, this.quiz.joinId, this.state.players));
