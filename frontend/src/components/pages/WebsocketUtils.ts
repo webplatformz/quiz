@@ -1,6 +1,6 @@
 export class WebsocketUtils {
 
-    public static websocketUrlByPath(path:string) {
+    public static websocketUrlByPath(path: string) {
         return this.websocketProtocolByLocation() +
             window.location.hostname +
             this.websocketPortWithColonByLocation() +
@@ -17,8 +17,7 @@ export class WebsocketUtils {
         // override for ionic dev server which does not proxy ws
         if (window.location.port === "3000") {
             return ":4000";
-        }
-        else if (window.location.port !== defaultPort) {
+        } else if (window.location.port !== defaultPort) {
             return ":" + window.location.port;
         } else {
             return "";
