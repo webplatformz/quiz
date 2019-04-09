@@ -1,15 +1,14 @@
 import React from 'react'
-import Start from "../pages/start/Start";
 import {Route, Switch} from "react-router";
-import WaitingRoom from "../pages/quiz/WaitingRoom";
+import PlayerList from "../pages/quiz/PlayerList";
+import QuizContainer from "../pages/quiz/QuizContainer";
 
 const Main = () => (
     <main>
         <Switch>
-            <Route exact path='/' component={Start}/>
-            <Route path='/:joinId' component={WaitingRoom}/>
-            <Route path='/operator/:operatorId' component={WaitingRoom}/>
-            <Route path='/admin/:adminId' component={WaitingRoom}/>
+            <Route exact path='/' component={QuizContainer}/>
+            <Route path='/operator/:operatorId' component={PlayerList}/>
+            <Route path='/admin/:adminId' component={PlayerList}/>
         </Switch>
     </main>
 );

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Button } from 'react-mdl';
+import {Button, Card, CardText, CardTitle, Textfield} from 'react-mdl';
 import {gql} from "apollo-boost";
 import {withApollo} from "react-apollo";
 
@@ -28,7 +28,7 @@ const START_QUIZ = gql`
     }
 `;
 
-class Create extends Component<any, any> {
+class CreateQuiz extends Component<any, any> {
     state = {
         quizState: 'Quiz not created yet',
         quizId: '-',
@@ -87,16 +87,19 @@ class Create extends Component<any, any> {
 
     render() {
         return (
-            <div>
-                <p>State: {this.state.quizState}</p>
-                <p>QuizId: {this.state.quizId}</p>
-                <p>Name: {this.state.quizName}</p>
-                <p>OperatorId: {this.state.operatorId}</p>
-                <p>JoinId: {this.state.joinId}</p>
-                <Button raised ripple onClick={this.createDummyQuiz}>Create</Button>
-            </div>
+            <Card shadow={0} style={{width: '300px', height: '400px', margin: 'auto'}}>
+                <CardTitle style={{textAlign: "center"}}>Create Quiz</CardTitle>
+                <CardText>
+                    <p>State: {this.state.quizState}</p>
+                    <p>QuizId: {this.state.quizId}</p>
+                    <p>Name: {this.state.quizName}</p>
+                    <p>OperatorId: {this.state.operatorId}</p>
+                    <p>JoinId: {this.state.joinId}</p>
+                    <Button raised ripple onClick={this.createDummyQuiz}>Create</Button>
+                </CardText>
+            </Card>
         )
     }
 }
 
-export default withApollo(Create);
+export default withApollo(CreateQuiz);
