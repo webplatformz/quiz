@@ -24,8 +24,7 @@ export class Game {
         return new QuizStart(player.name, joinId, this.state.players);
     }
 
-    // TODO callback function with types
-    registerOnPlayerJoined(callback: Function) {
+    registerOnPlayerJoined(callback: (quizStart: QuizStart) => void) {
 
     }
 }
