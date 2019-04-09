@@ -5,15 +5,15 @@ import { Button, Textfield } from 'react-mdl';
 import {withRouter} from "react-router";
 
 const JOIN_MUTATION = gql`
-    mutation join($joinId: String!){
-        join(joinId: $joinId) {
+    mutation join($joinId: String!, $nickname: String!){
+        join(input: { joinId: $joinId, nickname: $nickname}) {
           joinId
         }
     }
 `;
 
-class Join extends Component<any, any> {
-    state = {
+class Join extends Component<any, JoinState> {
+    state: JoinState=  {
         joinId: "",
         nickname: ""
     };
@@ -41,12 +41,14 @@ class Join extends Component<any, any> {
     render() {
         return (
             <div>
-                <Textfield onChange={(e: any) => {this.setState({...this.state, joinId: e.target.value})}}
+                <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                {this.setState({...this.state, joinId: event.currentTarget.value})}}
                            label="Quiz ID"
-                           pattern="-?[0-9]*(\.[0-9]+)?"
+                           pattern="^[A-Za-z1-9]{0,6}$"
                            style={{width: '200px'}} />
                 <br/>
-                <Textfield onChange={(e: any) => {this.setState({...this.state, nickname: e.target.value})}}
+                <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                {this.setState({...this.state, nickname: event.currentTarget.value})}}
                            label="Nickname"
                            style={{width: '200px'}} />
                 <br/>
@@ -55,6 +57,11 @@ class Join extends Component<any, any> {
             </div>
         );
     }
+}
+
+interface JoinState {
+    joinId: string,
+    nickname: string
 }
 
 export default withRouter(withApollo(Join));

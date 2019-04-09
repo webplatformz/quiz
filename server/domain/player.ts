@@ -1,5 +1,5 @@
 export class Player {
 
-    constructor(public id: number, public name: string, public score: number) {
+    constructor(public id: string, public name: string, public score: number) {
     }
 }
