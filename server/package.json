@@ -5,6 +5,7 @@
   "main": "server/index.ts",
   "scripts": {
     "test": "jest",
+    "test:ci": "jest --reporters=default --reporters=jest-junit",
     "tsc": "tsc",
     "rimraf": "rimraf",
     "clean": "rimraf build",
@@ -29,6 +30,7 @@
     "graphql": "14.1.x",
     "http": "0.0.0",
     "jest": "^24.7.1",
+    "jest-junit": "^6.3.0",
     "mockingoose": "^2.13.0",
     "mongoose": "^5.4.22",
     "rimraf": "^2.6.3",
