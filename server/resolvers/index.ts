@@ -1,13 +1,16 @@
 import QuizRepository from '../repositories/quiz-repository';
+import QuizService from '../quiz/quiz-service';
 import {Player} from '../domain/player';
-import {QuizStart} from "../domain/quiz-start";
+import {QuizStart} from '../domain/quiz-start';
 import {PubSub} from 'apollo-server';
-import {Quiz} from "../domain/quiz";
-import {QuizInput} from "../domain/quiz-input";
-import {SimpleGuid} from "../util/simple-guid";
-import {Question} from "../domain/question";
-import {Answer} from "../domain/answer";
-import {JoinInput} from "../domain/join-input";
+import {Quiz} from '../domain/quiz';
+import {QuizInput} from '../domain/quiz-input';
+import {SimpleGuid} from '../util/simple-guid';
+import {Question} from '../domain/question';
+import {Answer} from '../domain/answer';
+import {JoinInput} from '../domain/join-input';
+import {QuizOperator} from '../domain/quiz-operator';
+import {OperatorInput} from '../domain/operator-input';
 
 const pubsub = new PubSub();
 
@@ -25,7 +28,7 @@ export default {
             console.log(`Created quiz with ${quizId}`);
             return quizId;
         },
-        join: async (parent: any, {input}: { input: JoinInput }): Promise<QuizStart> => {
+        join: (parent: any, {input}: { input: JoinInput }): QuizStart => {
             const players = [
                 new Player("1", "Daniel", 0),
                 new Player("2", "Ben", 0),
@@ -34,6 +37,10 @@ export default {
             ];
 
             return new QuizStart("Dummy", input.joinId, players);
+        },
+        joinAsOperator: (parent: any, {input}: { input: OperatorInput }): QuizOperator => {
+            const quizMaster = QuizService.createOrGetGame(input.operatorId);
+            return quizMaster.joinAsOperator(input.nickname);
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);

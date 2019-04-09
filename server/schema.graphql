@@ -7,7 +7,7 @@ type Mutation {
     createQuiz: ID!
     updateQuiz(input: QuizInput!): Quiz!
     join(input: JoinInput!): QuizStart!
-    joinAsOperator(operatorId: String!): QuizOperator!
+    joinAsOperator(input: OperatorInput!): QuizOperator!
     launchNextQuestion(operatorId: String!): Question!
     # Returns the correct answer
     answerQuestion(playerId: ID!, answerId: ID!): Answer!
@@ -43,6 +43,11 @@ type QuizOperator {
 
 input JoinInput {
     joinId: String!
+    nickname: String!
+}
+
+input OperatorInput {
+    operatorId: String!
     nickname: String!
 }
 
