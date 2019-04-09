@@ -12,19 +12,19 @@ test('Game service throws error on non existing game', () => {
 
 test('Creates game if configuration exists', () => {
     const quiz = QuizRepository.createQuiz();
-    const quizMaster = GameService.createOrGetGame(quiz.operatorId);
+    const game = GameService.createOrGetGame(quiz.operatorId);
 
-    expect(quizMaster).toBeDefined();
+    expect(game).toBeDefined();
 });
 
 test('getRunningGameByJoinId should return game for given joinId', () => {
 
     const quiz = QuizRepository.createQuiz();
-    const quizMaster = GameService.createOrGetGame(quiz.operatorId);
+    const game = GameService.createOrGetGame(quiz.operatorId);
 
-    const returnedQuizMaster = GameService.getRunningGameByJoinId(quizMaster.quiz.joinId);
+    const returnedQuizMaster = GameService.getRunningGameByJoinId(game.quiz.joinId);
 
-    expect(returnedQuizMaster).toEqual(quizMaster);
+    expect(returnedQuizMaster).toEqual(game);
 });
 
 test('getRunningGameByJoinId should throw error if there is no active game for that joinId', () => {
