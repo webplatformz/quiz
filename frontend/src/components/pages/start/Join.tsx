@@ -53,7 +53,7 @@ class Join extends Component<any, JoinState> {
                            style={{width: '200px'}} />
                 <br/>
                 <br/>
-                <Button raised onClick={this.joinQuiz}>Join</Button>
+                <Button raised ripple onClick={this.joinQuiz}>Join</Button>
             </div>
         );
     }
