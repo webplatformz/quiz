@@ -11,8 +11,8 @@ const CREATE_QUIZ_MUTATION = gql`
 `;
 
 const UPDATE_QUIZ_MUTATION = gql`
-    mutation updateQuiz($quizId: String!){
-        updateQuiz(input: { quizId: $quizId, name: "Dummy", questions: []}) {
+    mutation updateQuiz($quizId: ID!){
+        updateQuiz(input: {id: $quizId, name: "Dummy", questions: []}) {
           name
           operatorId
         }
@@ -21,7 +21,7 @@ const UPDATE_QUIZ_MUTATION = gql`
 
 const START_QUIZ = gql`
     mutation joinAsOperator($operatorId: String!){
-        joinAsOperator(input: { operatorId: $operatorId}) {
+        joinAsOperator(operatorId: $operatorId) {
           operatorId
           joinId
         }
@@ -49,9 +49,9 @@ class Create extends Component<any, any> {
             .then((response: any) => {
                 this.setState({...this.state,
                     quizState: "Quiz created",
-                    quizId: response.data
+                    quizId: response.data.createQuiz
                 });
-                return this.updateDummyQuiz(response.data);
+                return this.updateDummyQuiz(response.data.createQuiz);
             });
     }
 
@@ -65,20 +65,23 @@ class Create extends Component<any, any> {
             .then((response: any) => {
                 this.setState({...this.state,
                     quizState: "Quiz updated",
-                    quizName: response.data.name
+                    operatorId: response.data.updateQuiz.operatorId,
+                    quizName: response.data.updateQuiz.name
                 });
-                return this.startQuiz(response.data.operatorId);
+                return this.startQuiz(response.data.updateQuiz.operatorId);
             });
     }
 
     startQuiz(operatorId: string) {
         this.props.client.mutate({
                 mutation: START_QUIZ,
+                variables: {
+                    operatorId: operatorId
+                }
             })
             .then((response: any) => this.setState({...this.state,
                 quizState: "Quiz started",
-                joinId: response.data.joinId,
-                operatorId: response.data.operatorId
+                joinId: response.data.joinAsOperator.joinId,
             }));
     }
 
@@ -86,9 +89,10 @@ class Create extends Component<any, any> {
         return (
             <div>
                 <p>State: {this.state.quizState}</p>
+                <p>QuizId: {this.state.quizId}</p>
                 <p>Name: {this.state.quizName}</p>
-                <p>JoinId: {this.state.joinId}</p>
                 <p>OperatorId: {this.state.operatorId}</p>
+                <p>JoinId: {this.state.joinId}</p>
                 <Button raised ripple onClick={this.createDummyQuiz}>Create</Button>
             </div>
         )
