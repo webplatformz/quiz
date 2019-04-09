@@ -5,7 +5,7 @@
   "main": "server/index.ts",
   "scripts": {
     "test": "npm-run-all --parallel test:*",
-    "test:backend": "npm test --prefix server",
+    "test:backend": "npm run test:ci --prefix server",
     "build:frontend": "npm run build --prefix frontend",
     "build:server": "npm run build --prefix server",
     "build": "npm-run-all --parallel build:*",

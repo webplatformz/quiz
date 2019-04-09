@@ -1,10 +1,16 @@
+import QuizRepository from '../repositories/quiz-repository';
 import {Player} from '../domain/player';
 import {QuizStart} from "../domain/quiz-start";
 import {PubSub} from 'apollo-server';
-import QuizRepository from '../repositories/quiz-repository';
+import {Quiz} from "../domain/quiz";
+import {QuizInput} from "../domain/quiz-input";
+import {SimpleGuid} from "../util/simple-guid";
+import {Question} from "../domain/question";
+import {Answer} from "../domain/answer";
 import {JoinInput} from "../domain/join-input";
 
 const pubsub = new PubSub();
+
 
 export default {
     Query: {
@@ -28,6 +34,24 @@ export default {
             ];
 
             return new QuizStart("Dummy", input.joinId, players);
+        },
+        updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
+            const quiz = QuizRepository.find(input.id);
+            if (!quiz) {
+                throw new Error(`Quiz with id ${input.id} not found.`);
+            }
+
+            quiz.name = input.name;
+            quiz.questions = input.questions.map(questionInput => {
+                const generatedQuestionId = SimpleGuid.shortGuid();
+                const answers = questionInput.answers.map(answerInput => {
+                    const generatedAnswerId = SimpleGuid.shortGuid();
+                    return new Answer(generatedAnswerId, answerInput.answer, answerInput.isCorrect);
+                });
+                return new Question(generatedQuestionId, questionInput.question, answers);
+            });
+
+            return QuizRepository.update(quiz);
         }
     },
     Subscription: {
