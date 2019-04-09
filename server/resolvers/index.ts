@@ -1,13 +1,15 @@
 import QuizRepository from '../repositories/quiz-repository';
-import {Player} from '../domain/player';
-import {QuizStart} from "../domain/quiz-start";
+import GameService from '../game/game-service';
+import {QuizStart} from '../domain/quiz-start';
 import {PubSub} from 'apollo-server';
-import {Quiz} from "../domain/quiz";
-import {QuizInput} from "../domain/quiz-input";
-import {SimpleGuid} from "../util/simple-guid";
-import {Question} from "../domain/question";
-import {Answer} from "../domain/answer";
-import {JoinInput} from "../domain/join-input";
+import {Quiz} from '../domain/quiz';
+import {QuizInput} from '../domain/quiz-input';
+import {SimpleGuid} from '../util/simple-guid';
+import {Question} from '../domain/question';
+import {Answer} from '../domain/answer';
+import {JoinInput} from '../domain/join-input';
+import {QuizOperator} from '../domain/quiz-operator';
+import {withFilter} from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
 
@@ -15,25 +17,25 @@ const pubsub = new PubSub();
 export default {
     Query: {
         info: async (parent?: any, args?: any) => {
-            pubsub.publish('TEST', {onTest: 'something happened'});
             return 'Hello from GraphQL 2'
         }
     },
     Mutation: {
         createQuiz: (parent?: any): string => {
-            const quizId = QuizRepository.createQuiz();
-            console.log(`Created quiz with ${quizId}`);
-            return quizId;
+            const quiz = QuizRepository.createQuiz();
+            return quiz.id;
         },
-        join: async (parent: any, {input}: { input: JoinInput }): Promise<QuizStart> => {
-            const players = [
-                new Player("1", "Daniel", 0),
-                new Player("2", "Ben", 0),
-                new Player("3", "Andi", 0),
-                new Player("4", "Martin", 0)
-            ];
-
-            return new QuizStart("Dummy", input.joinId, players);
+        join: (parent: any, {input}: { input: JoinInput }): QuizStart => {
+            return GameService.getRunningGameByJoinId(input.joinId).joinAsPlayer(input.joinId, input.nickname);
+        },
+        joinAsOperator: (parent: any, {operatorId}: { operatorId: string }): QuizOperator => {
+            const game = GameService.createOrGetGame(operatorId);
+            game.registerOnPlayerJoined((quizStart: QuizStart) => {
+                pubsub.publish('PLAYER_JOINED', {
+                    onPlayerJoined: quizStart
+                });
+            });
+            return game.quiz.getQuizOperator();
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);
@@ -55,8 +57,11 @@ export default {
         }
     },
     Subscription: {
-        onTest: {
-            subscribe: () => pubsub.asyncIterator(['TEST'])
+        onPlayerJoined: {
+            subscribe: withFilter(() => pubsub.asyncIterator('PLAYER_JOINED'),
+                ({onPlayerJoined}: { onPlayerJoined: QuizStart }, {joinId}: { joinId: string }) =>
+                    onPlayerJoined.joinId === joinId
+            )
         }
     }
 }
