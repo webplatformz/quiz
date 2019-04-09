@@ -5,6 +5,7 @@
   "main": "server/index.ts",
   "scripts": {
     "tslint": "tslint -c tslint.json ./**/*.ts",
+    "tslint:fix": "tslint --fix -c tslint.json ./**/*.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --reporters=default --reporters=jest-junit",
