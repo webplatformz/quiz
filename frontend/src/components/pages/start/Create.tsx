@@ -30,11 +30,11 @@ const START_QUIZ = gql`
 
 class Create extends Component<any, any> {
     state = {
-        quizState: "Quiz not created yet",
-        quizId: "-",
-        quizName: "-",
-        joinId: "-",
-        operatorId: "-",
+        quizState: 'Quiz not created yet',
+        quizId: '-',
+        quizName: '-',
+        joinId: '-',
+        operatorId: '-',
     };
 
     constructor(props: any) {

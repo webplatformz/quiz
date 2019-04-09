@@ -13,19 +13,22 @@ const PLAYER_JOIN_SUBSCRIPTION = gql`
 class WaitingRoom extends Component<any, any> {
 
     render() {
-        return <Subscription
-            subscription={PLAYER_JOIN_SUBSCRIPTION}
-            variables={{
-                joinId: this.props.match.params.joinId
-            }}>
+        return (
+            <Subscription
+                subscription={PLAYER_JOIN_SUBSCRIPTION}
+                variables={{
+                    joinId: this.props.match.params.joinId
+                }}
+            >
                 {(result: any) => {
-                    if(result.loading) {
+                    if (result.loading) {
                         return <p>Waiting ...</p>
                     }
                     const players = result.data.onPlayerJoined.players.map((player: any) => <li>{player.name}</li>);
                     return <ul>{players}</ul>
                 }}
-        </Subscription>
+            </Subscription>
+        )
     }
 }
 
