@@ -36,7 +36,7 @@ const link = split(
 );
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
-    link: link,
+    link,
     cache: new InMemoryCache()
 });
 
