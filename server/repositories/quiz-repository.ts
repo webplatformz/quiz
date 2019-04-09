@@ -4,10 +4,14 @@ import {SimpleGuid} from '../util/simple-guid';
 class QuizRepository {
     private quizes: Quiz[] = [];
 
-    createQuiz(): string {
-        const shortQuizId = SimpleGuid.shortGuid();
-        this.quizes.push(new Quiz(shortQuizId));
-        return shortQuizId;
+    createQuiz(): Quiz {
+        const quiz = new Quiz(SimpleGuid.shortGuid(), SimpleGuid.shortGuid(), SimpleGuid.shortGuid());
+        this.quizes.push(quiz);
+        return quiz;
+    }
+
+    findQuizByOperatorId(operatorId: string): Quiz | undefined {
+        return this.quizes.find(quiz => quiz.operatorId === operatorId);
     }
 
     find(id: string): Quiz | undefined {
