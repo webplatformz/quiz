@@ -22,9 +22,9 @@ test('getRunningGameByJoinId should return game for given joinId', () => {
     const quiz = QuizRepository.createQuiz();
     const game = GameService.createOrGetGame(quiz.operatorId);
 
-    const returnedQuizMaster = GameService.getRunningGameByJoinId(game.quiz.joinId);
+    const returnedGame = GameService.getRunningGameByJoinId(game.quiz.joinId);
 
-    expect(returnedQuizMaster).toEqual(game);
+    expect(returnedGame).toEqual(game);
 });
 
 test('getRunningGameByJoinId should throw error if there is no active game for that joinId', () => {
