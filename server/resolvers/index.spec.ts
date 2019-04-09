@@ -28,13 +28,13 @@ test('createQuiz returns an id', () => {
     expect(result).not.toBe(result2);
 });
 
-test('onTest subscription is triggered for info query', (done) => {
-    resolvers.Subscription.onTest.subscribe().next().then((payload: any) => {
+xtest('onTest subscription is triggered for info query', (done) => {
+    /*resolvers.Subscription.onTest.subscribe().next().then((payload: any) => {
         expect(payload.value.onTest).toBe('something happened');
         done();
     });
 
-    resolvers.Query.info();
+    resolvers.Query.info();*/
 });
 
 test('updateQuiz updates an existing quiz', () => {

@@ -10,6 +10,7 @@ import {Answer} from '../domain/answer';
 import {JoinInput} from '../domain/join-input';
 import {QuizOperator} from '../domain/quiz-operator';
 import {OperatorInput} from '../domain/operator-input';
+import {withFilter} from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
 
@@ -17,21 +18,25 @@ const pubsub = new PubSub();
 export default {
     Query: {
         info: async (parent?: any, args?: any) => {
-            pubsub.publish('TEST', {onTest: 'something happened'});
             return 'Hello from GraphQL 2'
         }
     },
     Mutation: {
         createQuiz: (parent?: any): string => {
             const quiz = QuizRepository.createQuiz();
-            console.log(`Created quiz with ID ${quiz.id}`);
             return quiz.id;
         },
         join: (parent: any, {input}: { input: JoinInput }): QuizStart => {
             return GameService.getRunningGameByJoinId(input.joinId).joinAsPlayer(input.joinId, input.nickname);
         },
         joinAsOperator: (parent: any, {input}: { input: OperatorInput }): QuizOperator => {
-            return GameService.createOrGetGame(input.operatorId).joinAsOperator(input.nickname);
+            const game = GameService.createOrGetGame(input.operatorId);
+            game.registerOnPlayerJoined((quizStart: QuizStart) => {
+                pubsub.publish('PLAYER_JOINED', {
+                    onPlayerJoined: quizStart
+                });
+            });
+            return game.joinAsOperator(input.nickname);
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);
@@ -53,8 +58,11 @@ export default {
         }
     },
     Subscription: {
-        onTest: {
-            subscribe: () => pubsub.asyncIterator(['TEST'])
+        onPlayerJoined: {
+            subscribe: withFilter(() => pubsub.asyncIterator('PLAYER_JOINED'),
+                ({onPlayerJoined}: { onPlayerJoined: QuizStart }, {joinId}: { joinId: string }) =>
+                    onPlayerJoined.joinId === joinId
+            )
         }
     }
 }
