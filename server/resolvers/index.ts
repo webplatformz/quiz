@@ -9,7 +9,6 @@ import {Question} from '../domain/question';
 import {Answer} from '../domain/answer';
 import {JoinInput} from '../domain/join-input';
 import {QuizOperator} from '../domain/quiz-operator';
-import {OperatorInput} from '../domain/operator-input';
 import {withFilter} from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
@@ -29,14 +28,14 @@ export default {
         join: (parent: any, {input}: { input: JoinInput }): QuizStart => {
             return GameService.getRunningGameByJoinId(input.joinId).joinAsPlayer(input.joinId, input.nickname);
         },
-        joinAsOperator: (parent: any, {input}: { input: OperatorInput }): QuizOperator => {
-            const game = GameService.createOrGetGame(input.operatorId);
+        joinAsOperator: (parent: any, {operatorId}: { operatorId: string }): QuizOperator => {
+            const game = GameService.createOrGetGame(operatorId);
             game.registerOnPlayerJoined((quizStart: QuizStart) => {
                 pubsub.publish('PLAYER_JOINED', {
                     onPlayerJoined: quizStart
                 });
             });
-            return game.joinAsOperator(input.nickname);
+            return game.quiz.getQuizOperator();
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);

@@ -28,26 +28,6 @@ test('createQuiz returns an id', () => {
     expect(result).not.toBe(result2);
 });
 
-test('onPlayerJoined subscription should trigger when operator joins', (done) => {
-    const quizId = resolvers.Mutation.createQuiz();
-    const quiz = resolvers.Mutation.updateQuiz(undefined, {
-        input: {
-            id: quizId,
-            name: 'MyNewQuiz',
-            questions: []
-        }
-    });
-
-    resolvers.Subscription.onPlayerJoined.subscribe(undefined, {joinId: quiz.joinId}).next().then((payload: any) => {
-        expect(payload.value.onPlayerJoined.joinId).toBe(quiz.joinId);
-        expect(payload.value.onPlayerJoined.name).toBe('MyNewQuiz');
-        done();
-    });
-
-    resolvers.Mutation.joinAsOperator(undefined, {
-        input: {operatorId: quiz.operatorId, nickname: "Hans"}
-    });
-});
 
 test('onPlayerJoined subscription should trigger when player joins after the operator has joined', (done) => {
     const quizId = resolvers.Mutation.createQuiz();
@@ -59,19 +39,17 @@ test('onPlayerJoined subscription should trigger when player joins after the ope
         }
     });
 
-    resolvers.Mutation.joinAsOperator(undefined, {
-        input: {operatorId: quiz.operatorId, nickname: "Hans"}
-    });
+    resolvers.Mutation.joinAsOperator(undefined, {operatorId: quiz.operatorId});
 
     resolvers.Subscription.onPlayerJoined.subscribe(undefined, {joinId: quiz.joinId}).next().then((payload: any) => {
         expect(payload.value.onPlayerJoined.joinId).toBe(quiz.joinId);
         expect(payload.value.onPlayerJoined.name).toBe('MyNewQuiz');
-        expect(payload.value.onPlayerJoined.players.length).toBe(2);
+        expect(payload.value.onPlayerJoined.players.length).toBe(1);
         done();
     });
 
     resolvers.Mutation.join(undefined, {
-        input: {joinId: quiz.joinId, nickname: "Michael"}
+        input: {joinId: quiz.joinId, nickname: 'Michael'}
     });
 });
 

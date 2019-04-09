@@ -46,8 +46,7 @@ test('registerOnPlayerJoined should call callback on operator joined', () => {
 
     game.joinAsOperator('Big Boss');
 
-    expect(callbackFn).toHaveBeenCalledTimes(1);
-    expect(callbackFn.mock.calls[0][0].name).toBe('Demo Quiz');
+    expect(callbackFn).toHaveBeenCalledTimes(0);
 });
 
 test('registerOnPlayerJoined should call callback for each operator & player joined', () => {
@@ -62,5 +61,5 @@ test('registerOnPlayerJoined should call callback for each operator & player joi
     game.joinAsPlayer(quiz.joinId, 'Nick');
     game.joinAsPlayer(quiz.joinId, 'Michael');
 
-    expect(callbackFn).toHaveBeenCalledTimes(3);
+    expect(callbackFn).toHaveBeenCalledTimes(2);
 });

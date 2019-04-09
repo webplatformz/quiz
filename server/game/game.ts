@@ -16,7 +16,6 @@ export class Game {
     joinAsOperator(nickname: string): QuizOperator {
         const player = new Player(SimpleGuid.shortGuid(), nickname, 0);
         this.state.players.push(player);
-        this.notifyOnPlayerJoinedSubscribers();
         return new QuizOperator(player.name, this.state.joinId, this.quiz.operatorId);
     }
 
