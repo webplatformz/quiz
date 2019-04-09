@@ -1,10 +1,13 @@
 import QuizRepository from '../repositories/quiz-repository';
+import {Player} from '../domain/player';
+import {QuizStart} from "../domain/quiz-start";
 import {PubSub} from 'apollo-server';
 import {Quiz} from "../domain/quiz";
 import {QuizInput} from "../domain/quiz-input";
 import {SimpleGuid} from "../util/simple-guid";
 import {Question} from "../domain/question";
 import {Answer} from "../domain/answer";
+import {JoinInput} from "../domain/join-input";
 
 const pubsub = new PubSub();
 
@@ -21,6 +24,16 @@ export default {
             const quizId = QuizRepository.createQuiz();
             console.log(`Created quiz with ${quizId}`);
             return quizId;
+        },
+        join: async (parent: any, {input}: { input: JoinInput }): Promise<QuizStart> => {
+            const players = [
+                new Player("1", "Daniel", 0),
+                new Player("2", "Ben", 0),
+                new Player("3", "Andi", 0),
+                new Player("4", "Martin", 0)
+            ];
+
+            return new QuizStart("Dummy", input.joinId, players);
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);
