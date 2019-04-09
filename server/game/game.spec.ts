@@ -13,16 +13,18 @@ test('Join as operator', () => {
 
 test('Join as player', () => {
     const quiz = QuizRepository.createQuiz();
+    quiz.name = 'Demo Quiz';
     const game = new Game(quiz);
 
     const quizStart = game.joinAsPlayer(quiz.joinId, 'Fritz');
 
     expect(quizStart.joinId).toBe(quiz.joinId);
-    expect(quizStart.name).toBe('Fritz');
+    expect(quizStart.name).toBe('Demo Quiz');
 });
 
-xtest('registerOnPlayerJoined should call callback on player joined', () => {
+test('registerOnPlayerJoined should call callback on player joined', () => {
     const quiz = QuizRepository.createQuiz();
+    quiz.name = 'Demo Quiz';
     const game = new Game(quiz);
 
     const callbackFn = jest.fn((quizStart: QuizStart) => {});
@@ -31,11 +33,12 @@ xtest('registerOnPlayerJoined should call callback on player joined', () => {
     game.joinAsPlayer(quiz.joinId, 'Fritz');
 
     expect(callbackFn).toHaveBeenCalledTimes(1);
-    expect(callbackFn.mock.calls[0][0].name).toBe('Fritz');
+    expect(callbackFn.mock.calls[0][0].name).toBe('Demo Quiz');
 });
 
-xtest('registerOnPlayerJoined should call callback on operator joined', () => {
+test('registerOnPlayerJoined should call callback on operator joined', () => {
     const quiz = QuizRepository.createQuiz();
+    quiz.name = 'Demo Quiz';
     const game = new Game(quiz);
 
     const callbackFn = jest.fn((quizStart: QuizStart) => {});
@@ -44,11 +47,12 @@ xtest('registerOnPlayerJoined should call callback on operator joined', () => {
     game.joinAsOperator('Big Boss');
 
     expect(callbackFn).toHaveBeenCalledTimes(1);
-    expect(callbackFn.mock.calls[0][0].name).toBe('Big Boss');
+    expect(callbackFn.mock.calls[0][0].name).toBe('Demo Quiz');
 });
 
-xtest('registerOnPlayerJoined should call callback for each operator & player joined', () => {
+test('registerOnPlayerJoined should call callback for each operator & player joined', () => {
     const quiz = QuizRepository.createQuiz();
+    quiz.name = 'Demo Quiz';
     const game = new Game(quiz);
 
     const callbackFn = jest.fn(() => {});
