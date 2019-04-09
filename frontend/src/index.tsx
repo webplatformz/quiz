@@ -13,13 +13,14 @@ import 'react-mdl/extra/material.css';
 import 'react-mdl/extra/material.js';
 import {WebSocketLink} from "apollo-link-ws";
 import {getMainDefinition} from 'apollo-utilities';
+import {WebsocketUtils} from "./components/pages/WebsocketUtils";
 
 const httpLink: ApolloLink = createHttpLink({
     uri: '/graphql'
 });
 
 const webSocketLink = new WebSocketLink({
-    uri: `ws://localhost:4000/graphql`,
+    uri: WebsocketUtils.websocketUrlByPath('graphql'),
     options: {
         reconnect: true,
     }
