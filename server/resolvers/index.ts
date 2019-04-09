@@ -1,5 +1,5 @@
 import QuizRepository from '../repositories/quiz-repository';
-import QuizService from '../quiz/quiz-service';
+import GameService from '../game/game-service';
 import {Player} from '../domain/player';
 import {QuizStart} from '../domain/quiz-start';
 import {PubSub} from 'apollo-server';
@@ -39,7 +39,7 @@ export default {
             return new QuizStart("Dummy", input.joinId, players);
         },
         joinAsOperator: (parent: any, {input}: { input: OperatorInput }): QuizOperator => {
-            const quizMaster = QuizService.createOrGetGame(input.operatorId);
+            const quizMaster = GameService.createOrGetGame(input.operatorId);
             return quizMaster.joinAsOperator(input.nickname);
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {

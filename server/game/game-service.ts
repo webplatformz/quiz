@@ -1,12 +1,12 @@
-import {QuizMaster} from './quiz-master';
+import {Game} from './game';
 import QuizRepository from '../repositories/quiz-repository'
 import {Quiz} from '../domain/quiz';
 
-class QuizService {
+class GameService {
 
-    private activeQuizMasters: Map<string, QuizMaster> = new Map();
+    private activeQuizMasters: Map<string, Game> = new Map();
 
-    createOrGetGame(operatorId: string): QuizMaster {
+    createOrGetGame(operatorId: string): Game {
         let runningGame = this.getRunningGame(operatorId);
         if (!runningGame) {
             const quiz = QuizRepository.findQuizByOperatorId(operatorId);
@@ -19,7 +19,7 @@ class QuizService {
         return runningGame;
     }
 
-    getRunningGameByJoinId(joinId: string): QuizMaster {
+    getRunningGameByJoinId(joinId: string): Game {
         const quizMaster = Array.from(this.activeQuizMasters.values()).find(quizMaster => quizMaster.quiz.joinId === joinId);
         if (!quizMaster) {
             throw new Error(`No running game by join ID ${joinId} found.`);
@@ -27,17 +27,17 @@ class QuizService {
         return quizMaster;
     }
 
-    private createGame(quiz: Quiz): QuizMaster {
-        const quizMaster = new QuizMaster(quiz);
+    private createGame(quiz: Quiz): Game {
+        const quizMaster = new Game(quiz);
         this.activeQuizMasters.set(quiz.operatorId, quizMaster);
         return quizMaster;
     }
 
-    private getRunningGame(operatorId: string): QuizMaster | undefined {
+    private getRunningGame(operatorId: string): Game | undefined {
         return this.activeQuizMasters.get(operatorId);
     }
 
 }
 
 
-export default new QuizService();
+export default new GameService();

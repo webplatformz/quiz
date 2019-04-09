@@ -5,7 +5,7 @@ import {Player} from '../domain/player';
 import {SimpleGuid} from '../util/simple-guid';
 import {Quiz} from '../domain/quiz';
 
-export class QuizMaster {
+export class Game {
     private state: QuizState = new QuizState();
 
     constructor(public quiz: Quiz) {

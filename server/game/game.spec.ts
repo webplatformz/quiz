@@ -1,9 +1,9 @@
 import QuizRepository from "../repositories/quiz-repository";
-import {QuizMaster} from "./quiz-master";
+import {Game} from "./game";
 
 test('Join as operator', () => {
     const quiz = QuizRepository.createQuiz();
-    const quizMaster = new QuizMaster(quiz);
+    const quizMaster = new Game(quiz);
 
     const quizOperator = quizMaster.joinAsOperator('Hugo');
 
@@ -12,7 +12,7 @@ test('Join as operator', () => {
 
 test('Join as player', () => {
     const quiz = QuizRepository.createQuiz();
-    const quizMaster = new QuizMaster(quiz);
+    const quizMaster = new Game(quiz);
 
     const quizStart = quizMaster.joinAsPlayer(quiz.joinId, 'Fritz');
 
