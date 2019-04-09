@@ -28,13 +28,25 @@ test('createQuiz returns an id', () => {
     expect(result).not.toBe(result2);
 });
 
-xtest('onTest subscription is triggered for info query', (done) => {
-    /*resolvers.Subscription.onTest.subscribe().next().then((payload: any) => {
-        expect(payload.value.onTest).toBe('something happened');
+test('onPlayerJoined subscription should trigger when operator joins', (done) => {
+    const quizId = resolvers.Mutation.createQuiz();
+    const quiz = resolvers.Mutation.updateQuiz(undefined, {
+        input: {
+            id: quizId,
+            name: 'MyNewQuiz',
+            questions: []
+        }
+    });
+
+    resolvers.Subscription.onPlayerJoined.subscribe(undefined, {joinId: quiz.joinId}).next().then((payload: any) => {
+        expect(payload.value.onPlayerJoined.joinId).toBe(quiz.joinId);
         done();
     });
 
-    resolvers.Query.info();*/
+    resolvers.Mutation.joinAsOperator(undefined, {
+        input: {operatorId: quiz.operatorId, nickname: "Hans"}
+    });
+
 });
 
 test('updateQuiz updates an existing quiz', () => {
