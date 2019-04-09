@@ -17,11 +17,18 @@ test('Creates quiz if configuration exists', () => {
     expect(quizMaster).toBeDefined();
 });
 
-test('Join as operator', () => {
+test('getRunningGameByJoinId should return QuizMaster for given joinId', () => {
+
     const quiz = QuizRepository.createQuiz();
     const quizMaster = QuizService.createOrGetGame(quiz.operatorId);
 
-    const quizOperator = quizMaster.joinAsOperator('Hugo');
+    const returnedQuizMaster = QuizService.getRunningGameByJoinId(quizMaster.quiz.joinId);
 
-    expect(quizOperator.operatorId).toBe(quiz.operatorId);
+    expect(returnedQuizMaster).toEqual(quizMaster);
+});
+
+test('getRunningGameByJoinId should throw error if there is no active QuizMaster for that joinId', () => {
+    const result = () => QuizService.getRunningGameByJoinId('unknownJoinId');
+
+    expect(result).toThrowError('No running game by join ID unknownJoinId found.');
 });
