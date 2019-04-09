@@ -28,7 +28,6 @@ test('createQuiz returns an id', () => {
     expect(result).not.toBe(result2);
 });
 
-
 test('onTest subscription is triggered for info query', (done) => {
     resolvers.Subscription.onTest.subscribe().next().then((payload: any) => {
         expect(payload.value.onTest).toBe('something happened');
@@ -36,4 +35,47 @@ test('onTest subscription is triggered for info query', (done) => {
     });
 
     resolvers.Query.info();
+});
+
+test('updateQuiz updates an existing quiz', () => {
+    const createdQuizId = resolvers.Mutation.createQuiz();
+    const result = resolvers.Mutation.updateQuiz(undefined, {
+        input: {
+            id: createdQuizId,
+            name: 'MyNewQuiz',
+            questions: [
+                {
+                    question: 'Welcher Wochentag ist heute?',
+                    answers: [
+                        {
+                            answer: 'Montag',
+                            isCorrect: true
+
+                        }, {
+                            answer: 'Dienstag',
+                            isCorrect: false
+                        }
+                    ]
+                }
+            ]
+        }
+    });
+
+    expect(result.id).toBe(createdQuizId);
+    expect(result.name).toBe('MyNewQuiz');
+    expect(result.questions.length).toBe(1);
+    expect(result.questions[0].answers.length).toBe(2);
+});
+
+test('updateQuiz throws error if id not exists', () => {
+    const result = () => {
+        resolvers.Mutation.updateQuiz(undefined, {
+            input: {
+                id: 'unknownId',
+                name: 'MyNewQuiz',
+                questions: []
+            }
+        });
+    };
+    expect(result).toThrowError('Quiz with id unknownId not found.');
 });
