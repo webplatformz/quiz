@@ -4,6 +4,7 @@
   "description": "Quiz platform to create live quizzes.",
   "main": "server/index.ts",
   "scripts": {
+    "tslint": "tslint -c tslint.json ./**/*.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --reporters=default --reporters=jest-junit",
@@ -37,6 +38,7 @@
     "mongoose": "^5.4.22",
     "rimraf": "^2.6.3",
     "ts-jest": "^24.0.1",
+    "tslint": "^5.15.0",
     "typescript": "^3.3.3333"
   },
   "devDependencies": {},
