@@ -24,9 +24,9 @@ export default {
     },
     Mutation: {
         createQuiz: (parent?: any): string => {
-            const quizId = QuizRepository.createQuiz();
-            console.log(`Created quiz with ${quizId}`);
-            return quizId;
+            const quiz = QuizRepository.createQuiz();
+            console.log(`Created quiz with ID ${quiz.id}`);
+            return quiz.id;
         },
         join: (parent: any, {input}: { input: JoinInput }): QuizStart => {
             const players = [

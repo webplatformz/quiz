@@ -5,6 +5,7 @@
   "main": "server/index.ts",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
     "test:ci": "jest --reporters=default --reporters=jest-junit",
     "tsc": "tsc",
     "rimraf": "rimraf",

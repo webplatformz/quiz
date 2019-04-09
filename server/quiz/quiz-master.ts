@@ -3,15 +3,19 @@ import {QuizOperator} from '../domain/quiz-operator';
 import {QuizStart} from '../domain/quiz-start';
 import {Player} from '../domain/player';
 import {SimpleGuid} from '../util/simple-guid';
+import {Quiz} from '../domain/quiz';
 
 export class QuizMaster {
-
     private state: QuizState = new QuizState();
+
+    constructor(public quiz: Quiz) {
+
+    }
 
     joinAsOperator(nickname: string): QuizOperator {
         const player = new Player(SimpleGuid.shortGuid(), nickname, 0);
         this.state.players.push(player);
-        return new QuizOperator(player.name, this.state.joinId, player.id);
+        return new QuizOperator(player.name, this.state.joinId, this.quiz.operatorId);
     }
 
     joinAsPlayer(joinId: string, nickname: string): QuizStart {
