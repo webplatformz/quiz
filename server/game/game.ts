@@ -37,7 +37,7 @@ export class Game {
     private notifyOnPlayerJoinedSubscribers() {
         this.onPlayerJoinedSubscribers.forEach(subscriber => {
             if(!this.quiz.name) {
-                throw new Error(`The quiz with ID ${this.quiz.id} is not ready yet - it mises a name.`);
+                throw new Error(`The quiz with ID ${this.quiz.id} is not ready yet - it misses a name.`);
             }
             subscriber(new QuizStart(this.quiz.name, this.quiz.joinId, this.state.players));
         });
