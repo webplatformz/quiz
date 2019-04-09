@@ -4,7 +4,7 @@ import {Quiz} from '../domain/quiz';
 
 class GameService {
 
-    private activeQuizMasters: Map<string, Game> = new Map();
+    private activeGames: Map<string, Game> = new Map();
 
     createOrGetGame(operatorId: string): Game {
         let runningGame = this.getRunningGame(operatorId);
@@ -20,21 +20,21 @@ class GameService {
     }
 
     getRunningGameByJoinId(joinId: string): Game {
-        const quizMaster = Array.from(this.activeQuizMasters.values()).find(quizMaster => quizMaster.quiz.joinId === joinId);
-        if (!quizMaster) {
+        const activeGame = Array.from(this.activeGames.values()).find(activeGame => activeGame.quiz.joinId === joinId);
+        if (!activeGame) {
             throw new Error(`No running game by join ID ${joinId} found.`);
         }
-        return quizMaster;
+        return activeGame;
     }
 
     private createGame(quiz: Quiz): Game {
-        const quizMaster = new Game(quiz);
-        this.activeQuizMasters.set(quiz.operatorId, quizMaster);
-        return quizMaster;
+        const activeGame = new Game(quiz);
+        this.activeGames.set(quiz.operatorId, activeGame);
+        return activeGame;
     }
 
     private getRunningGame(operatorId: string): Game | undefined {
-        return this.activeQuizMasters.get(operatorId);
+        return this.activeGames.get(operatorId);
     }
 
 }
