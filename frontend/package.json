@@ -10,6 +10,7 @@
     "@types/react-mdl": "^1.7.27",
     "@types/react-router-dom": "^4.3.1",
     "apollo-boost": "^0.3.1",
+    "apollo-link-ws": "^1.0.17",
     "graphql": "~14.2.1",
     "react": "^16.8.4",
     "react-apollo": "^2.5.2",
@@ -17,8 +18,10 @@
     "react-mdl": "^1.11.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
+    "subscriptions-transport-ws": "^0.9.16",
     "typescript": "3.4.2"
   },
+  "proxy": "http://localhost:4000/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

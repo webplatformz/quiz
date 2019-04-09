@@ -1,6 +1,19 @@
 import React, {Component} from 'react'
+import {gql} from "apollo-boost";
+//import {Player} from "../../../../../server/domain/quiz-start";
+import {graphql} from "react-apollo";
 
-export default class WaitingRoom extends Component<any, any> {
+const PLAYER_JOIN_SUBSCRIPTION = gql`
+    subscription {
+        onTest 
+    }
+`;
+
+class WaitingRoom extends Component<any, any> {
+    componentWillReceiveProps(data: any) {
+        console.log(data)
+    }
+
     render() {
         return (
             <div>
@@ -9,3 +22,5 @@ export default class WaitingRoom extends Component<any, any> {
         )
     }
 }
+
+export default graphql(PLAYER_JOIN_SUBSCRIPTION)(WaitingRoom);
