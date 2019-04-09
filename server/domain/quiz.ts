@@ -2,7 +2,11 @@ import {Question} from './question';
 
 export class Quiz {
 
-    secondsToAnswer: number = 10;
+    joinId: string | undefined;
+
+    operatorId: string | undefined;
+
+    name: string | undefined;
 
     questions: Question[] = [];
 
