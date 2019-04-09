@@ -1,6 +1,5 @@
 import QuizRepository from '../repositories/quiz-repository';
 import GameService from '../game/game-service';
-import {Player} from '../domain/player';
 import {QuizStart} from '../domain/quiz-start';
 import {PubSub} from 'apollo-server';
 import {Quiz} from '../domain/quiz';
@@ -29,18 +28,10 @@ export default {
             return quiz.id;
         },
         join: (parent: any, {input}: { input: JoinInput }): QuizStart => {
-            const players = [
-                new Player("1", "Daniel", 0),
-                new Player("2", "Ben", 0),
-                new Player("3", "Andi", 0),
-                new Player("4", "Martin", 0)
-            ];
-
-            return new QuizStart("Dummy", input.joinId, players);
+            return GameService.getRunningGameByJoinId(input.joinId).joinAsPlayer(input.joinId, input.nickname);
         },
         joinAsOperator: (parent: any, {input}: { input: OperatorInput }): QuizOperator => {
-            const quizMaster = GameService.createOrGetGame(input.operatorId);
-            return quizMaster.joinAsOperator(input.nickname);
+            return GameService.createOrGetGame(input.operatorId).joinAsOperator(input.nickname);
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);
