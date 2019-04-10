@@ -28,7 +28,7 @@ test('registerOnPlayerJoined should call callback on player joined', () => {
     expect(callbackFn.mock.calls[0][0].name).toBe('Demo Quiz');
 });
 
-test('registerOnPlayerJoined should call callback for each operator & player joined', () => {
+test('registerOnPlayerJoined should call callback for player joined', () => {
     const quiz = QuizRepository.createQuiz();
     quiz.name = 'Demo Quiz';
     const game = new Game(quiz);
