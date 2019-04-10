@@ -7,8 +7,8 @@ const Main = () => (
     <main>
         <Switch>
             <Route exact path='/' component={QuizContainer}/>
-            <Route path='/operator/:operatorId' component={PlayerList}/>
-            <Route path='/admin/:adminId' component={PlayerList}/>
+            <Route path='/operator/:operatorId' component={QuizContainer}/>
+            <Route path='/createquiz/:quizId' component={PlayerList}/>
         </Switch>
     </main>
 );

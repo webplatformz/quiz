@@ -1,21 +1,24 @@
 import React, {Component} from 'react'
-import JoinQuiz from "./JoinQuiz";
-import CreateQuiz from "./CreateQuiz";
-import {Player} from "../../../../../server/domain/player";
-import {withApollo, WithApolloClient} from "react-apollo";
-import {gql} from "apollo-boost";
-import PlayerList from "./PlayerList";
+import JoinQuiz from './JoinQuiz';
+import CreateQuiz from './CreateQuiz';
+import {Player} from '../../../../../server/domain/player';
+import {withApollo, WithApolloClient} from 'react-apollo';
+import {gql} from 'apollo-boost';
+import PlayerList from './PlayerList';
 import {Grid, Cell} from 'react-mdl';
+import {WaitingRoom} from './WaitingRoom';
+import {StartPage} from './StartPage';
 import {Question} from "../../../../../server/domain/question";
 import {Answer} from "../../../../../server/domain/answer";
 import {Ranking} from "../../../../../server/domain/ranking";
 
 interface QuizContainerState {
-    joinId: string,
+    joinId: string | undefined,
+    operatorId: string | undefined,
     players: Player[],
-    question?: Question,
-    answer?: Answer,
-    ranking?: Ranking,
+    question: Question | undefined,
+    answer: Answer | undefined,
+    ranking: Ranking | undefined,
     isFinalState: boolean
 }
 
@@ -60,7 +63,8 @@ const RANKING_CHANGED_SUBSCRIPTION = gql`
 
 class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState> {
     state: QuizContainerState = {
-        joinId: "",
+        joinId: undefined,
+        operatorId: undefined,
         players: [],
         question: undefined,
         ranking: undefined,
@@ -70,10 +74,11 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     constructor(props: any) {
         super(props);
         this.joinQuiz = this.joinQuiz.bind(this);
+        this.state.operatorId = this.props.match.params.operatorId;
     }
 
-    joinQuiz(joinId: string) {
-        this.setState({...this.state, joinId: joinId});
+    joinQuiz(joinId: string, players: Player[]) {
+        this.setState({...this.state, joinId, players});
         this.subscribeToPlayerJoined();
         this.subscribeToNextQuestion();
         this.subscribeToQuestionTimeout();
@@ -132,21 +137,14 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         if (this.state.joinId) {
             return (
                 <div style={{width: '80%', margin: 'auto', paddingTop: '16px'}}>
-                    <PlayerList players={this.state.players}/>
+                    <WaitingRoom players={this.state.players} operatorId={this.state.operatorId}/>
                 </div>
             );
         }
 
         return (
             <div style={{width: '80%', margin: 'auto'}}>
-                <Grid>
-                    <Cell col={6}>
-                        <JoinQuiz joinQuiz={this.joinQuiz}/>
-                    </Cell>
-                    <Cell col={6}>
-                        <CreateQuiz/>
-                    </Cell>
-                </Grid>
+                <StartPage joinQuiz={this.joinQuiz}/>
             </div>
         )
     }
