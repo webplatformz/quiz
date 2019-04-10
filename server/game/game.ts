@@ -28,8 +28,7 @@ export class Game {
     }
 
     getNextQuestion(): Question | undefined {
-        const index = ++this.state.currentQuestionIndex;
-        return index >= this.state.questions.length ? undefined : this.state.questions[index];
+        return this.state.questions[++this.state.currentQuestionIndex];
     }
 
     private notifyOnPlayerJoinedSubscribers() {
