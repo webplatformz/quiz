@@ -69,6 +69,9 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     joinQuiz(joinId: string) {
         this.setState({...this.state, joinId: joinId});
         this.subscribeToPlayerJoined();
+        this.subscribeToNextQuestion();
+        this.subscribeToQuestionTimeout();
+        this.subscribeToRankingChanged();
     }
 
     subscribeToPlayerJoined(): void {
@@ -82,7 +85,6 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         })
     }
 
-    // TODO: subscribe to me
     subscribeToNextQuestion(): void {
         this.props.client.subscribe({
             query: NEXT_QUESTION_SUBSCRIPTION,
@@ -94,7 +96,6 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         })
     }
 
-    // TODO: subscribe to me
     subscribeToQuestionTimeout(): void {
         this.props.client.subscribe({
             query: QUESTION_TIMEOUT_SUBSCRIPTION,
@@ -106,7 +107,6 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         })
     }
 
-    // TODO: subscribe to me
     subscribeToRankingChanged(): void {
         this.props.client.subscribe({
             query: RANKING_CHANGED_SUBSCRIPTION,
