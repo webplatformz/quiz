@@ -1,9 +1,9 @@
 import {QuizState} from './quiz-state';
-import {QuizOperator} from '../domain/quiz-operator';
 import {QuizStart} from '../domain/quiz-start';
 import {Player} from '../domain/player';
 import {SimpleGuid} from '../util/simple-guid';
 import {Quiz} from '../domain/quiz';
+import {Question} from "../domain/question";
 
 export class Game {
     private state: QuizState = new QuizState();
@@ -25,6 +25,11 @@ export class Game {
 
     registerOnPlayerJoined(callback: (quizStart: QuizStart) => void) {
         this.onPlayerJoinedSubscribers.push(callback);
+    }
+
+    getNextQuestion(): Question | undefined {
+        const index = ++this.state.currentQuestionIndex;
+        return index >= this.state.questions.length ? undefined : this.state.questions[index];
     }
 
     private notifyOnPlayerJoinedSubscribers() {

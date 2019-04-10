@@ -38,6 +38,29 @@ export default {
             });
             return game.quiz.getQuizOperator();
         },
+        launchNextQuestion: (parent: any, {operatorId}: { operatorId: string }): Boolean => {
+            const game = GameService.createOrGetGame(operatorId);
+            const nextQuestion = game.getNextQuestion();
+            if (nextQuestion === undefined) {
+                // end of questions
+                return false;
+            }
+
+            const correctAnswer = nextQuestion.answers.find(answer => answer.isCorrect);
+
+            pubsub.publish('NEXT_QUESTION', {
+                onNextQuestion: nextQuestion
+            });
+
+            setTimeout(() => {
+                pubsub.publish('QUESTION_TIMEOUT', {
+                    onQuestionTimeout: correctAnswer
+                });
+            }, 10000);
+
+            return true;
+
+        },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);
             if (!quiz) {
@@ -65,19 +88,19 @@ export default {
             )
         },
         onNextQuestion: {
-            subscribe: withFilter(() => pubsub.asyncIterator('ON_NEXT_QUESTION'),
+            subscribe: withFilter(() => pubsub.asyncIterator('NEXT_QUESTION'),
                 ({onNextQuestion, questionJoinId}: { onNextQuestion: Question, questionJoinId: string }, {joinId}: { joinId: string }) =>
                     questionJoinId === joinId
             )
         },
         onQuestionTimeout: {
-            subscribe: withFilter(() => pubsub.asyncIterator('ON_QUESTION_TIMEOUT'),
+            subscribe: withFilter(() => pubsub.asyncIterator('QUESTION_TIMEOUT'),
                 ({onQuestionTimeout, answerJoinId}: { onQuestionTimeout: Answer, answerJoinId: string }, {joinId}: { joinId: string }) =>
                     answerJoinId === joinId
             )
         },
         onRankingChanged: {
-            subscribe: withFilter(() => pubsub.asyncIterator('ON_RANKING_CHANGED'),
+            subscribe: withFilter(() => pubsub.asyncIterator('RANKING_CHANGED'),
                 ({onRankingChanged, rankingJoinId}: { onRankingChanged: Ranking, rankingJoinId: string }, {joinId}: { joinId: string }) =>
                     rankingJoinId === joinId
             )
