@@ -11,12 +11,21 @@ export class QuestionContainer extends Component<QuestionContainerProps, any> {
     render() {
         return (
             <div>
-                <div>{this.props.question.question}</div>
-                <div>
+                <div><h1>{this.props.question.question}</h1></div>
+                <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
                     {
                         this.props.question.answers.map((answer => {
                             return (
-                                <div className="answer">
+                                <div key={answer.id} style={
+                                    {
+                                        minWidth: '400px',
+                                        backgroundColor: 'white',
+                                        padding: '40px',
+                                        fontSize: 'large',
+                                        margin: '20px',
+                                        cursor: 'pointer',
+                                        boxShadow: '10px 10px 5px 0px rgba(0,0,0,0.75)'
+                                    }}>
                                     {answer.answer}
                                 </div>)
                         }))
