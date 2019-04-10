@@ -15,7 +15,8 @@ interface QuizContainerState {
     players: Player[],
     question?: Question,
     answer?: Answer,
-    ranking?: Ranking
+    ranking?: Ranking,
+    isFinalState: boolean
 }
 
 const PLAYER_JOIN_SUBSCRIPTION = gql`
@@ -48,7 +49,11 @@ const QUESTION_TIMEOUT_SUBSCRIPTION = gql`
 const RANKING_CHANGED_SUBSCRIPTION = gql`
     subscription onRankingChanged($joinId: String!){
         onRankingChanged(joinId: $joinId) {
-            ranking
+            players {
+                id
+                name
+            }
+            isFinalState
         }
     }
 `;
@@ -58,7 +63,8 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         joinId: "",
         players: [],
         question: undefined,
-        ranking: undefined
+        ranking: undefined,
+        isFinalState: false
     };
 
     constructor(props: any) {
@@ -114,7 +120,11 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, ranking: response.data.onRankingChanged.ranking});
+            this.setState({
+                ...this.state,
+                players: response.data.onRankingChanged.players,
+                isFinalState: response.data.onRankingChanged.isFinalState
+            });
         })
     }
 
