@@ -42,7 +42,6 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         this.launchNextQuestion = this.launchNextQuestion.bind(this);
     }
 
-
     render() {
         let answers;
         let launchButton;
@@ -65,7 +64,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         } else {
             if (this.props.correctAnswerId) {
                 launchButton = (
-                    <Button raised ripple colored onClick={this.launchNextQuestion}>
+                    <Button raised ripple colored style={{marginTop: '24px'}} onClick={this.launchNextQuestion}>
                         Launch next question
                     </Button>
                 );
@@ -80,6 +79,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
                 {answers}
                 <div style={{
                     display: 'flex',
+                    flexWrap: 'wrap',
                     marginTop: '20px',
                     justifyContent: 'space-around'
                 }}>

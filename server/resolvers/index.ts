@@ -30,7 +30,7 @@ export default {
             return GameService.getRunningGameByJoinId(input.joinId).joinAsPlayer(input.joinId, input.nickname);
         },
         joinAsOperator: (parent: any, {operatorId}: { operatorId: string }): QuizOperator => {
-            const game = GameService.createOrGetGame(operatorId);
+            const game = GameService.createOrResetGame(operatorId);
             game.registerOnPlayerJoined((quizStart: QuizStart) => {
                 pubsub.publish(Triggers.PlayerJoined, {
                     onPlayerJoined: quizStart
@@ -39,7 +39,7 @@ export default {
             return game.getQuizOperator();
         },
         launchNextQuestion: (parent: any, {operatorId}: { operatorId: string }): Boolean => {
-            const game = GameService.createOrGetGame(operatorId);
+            const game = GameService.getGame(operatorId);
             return game.publishNextQuestion((nextQuestion: Question) => {
                 pubsub.publish(Triggers.NextQuestion, {
                     onNextQuestion: nextQuestion,
@@ -72,17 +72,6 @@ export default {
                 });
                 return new Question(generatedQuestionId, questionInput.question, answers);
             });
-
-            // Fix with admin gui - fill in default Quiz
-            const falseAnswer = new Answer('A1', 'Alpha Romeo', false);
-            const correctAnswer = new Answer('A2', 'Daimler', true);
-            const question1 = new Question('Q1', 'Welche Automarke wurde früher gegründet?', [falseAnswer, correctAnswer]);
-
-            const correctAnswer2 = new Answer('A2', '1856', true);
-            const falseAnswer2 = new Answer('A1', '1895', false);
-            const question2 = new Question('Q1', 'In welchem Jahr wurde Nicolas Tesla geboren?', [correctAnswer2, falseAnswer2]);
-
-            quiz.questions = [question1, question2];
 
             return QuizRepository.update(quiz);
         },
