@@ -45,7 +45,7 @@ test('registerOnPlayerJoined should call callback for player joined', () => {
     expect(callbackFn).toHaveBeenCalledTimes(2);
 });
 
-test('getNextQuestion should return correct question in callback', () => {
+test('publishNextQuestion should return correct question in callback', () => {
     const quiz = QuizRepository.createQuiz();
     const answer1 = new Answer('1', 'Alpha Romeo', false);
     const answer2 = new Answer('2', 'Mercedes', true);
