@@ -136,6 +136,13 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
             });
     }
 
+    subscribeToQuizEvents(): void {
+        this.subscribeToPlayerJoined();
+        this.subscribeToNextQuestion();
+        this.subscribeToQuestionTimeout();
+        this.subscribeToRankingChanged();
+    }
+
     subscribeToPlayerJoined(): void {
         this.props.client.subscribe({
             query: PLAYER_JOIN_SUBSCRIPTION,
