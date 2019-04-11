@@ -24,6 +24,18 @@ export default {
     Mutation: {
         createQuiz: (parent?: any): string => {
             const quiz = QuizRepository.createQuiz();
+
+            // Fix with admin gui - fill in default Quiz
+            const falseAnswer = new Answer('A1', 'Alpha Romeo', false);
+            const correctAnswer = new Answer('A2', 'Daimler', true);
+            const question1 = new Question('Q1', 'Welche Automarke wurde früher gegründet?', [falseAnswer, correctAnswer]);
+
+            const correctAnswer2 = new Answer('A2', '1856', true);
+            const falseAnswer2 = new Answer('A1', '1895', false);
+            const question2 = new Question('Q1', 'In welchem Jahr wurde Nicolas Tesla geboren?', [correctAnswer2, falseAnswer2]);
+
+            quiz.questions = [question1, question2];
+
             return quiz.id;
         },
         join: (parent: any, {input}: { input: JoinInput }): QuizStart => {
