@@ -15,6 +15,7 @@ interface QuestionContainerProps {
 }
 
 interface QuestionContainerState {
+    questionId: string | undefined;
     chosenAnswerId: string | undefined;
 }
 
@@ -32,6 +33,7 @@ const LAUNCH_QUESTION_MUTATION = gql`
 
 class QuestionContainer extends Component<WithApolloClient<QuestionContainerProps>, QuestionContainerState> {
     state = {
+        questionId: undefined,
         chosenAnswerId: undefined
     };
 
@@ -44,6 +46,9 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
     render() {
         let answers;
         let launchButton;
+        if (this.props.question.id !== this.state.questionId) {
+            this.setState({...this.state, questionId: this.props.question.id});
+        }
         if (!this.props.operatorId) {
             answers = (
                 <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
@@ -78,7 +83,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
                     marginTop: '20px',
                     justifyContent: 'space-around'
                 }}>
-                    <AnswerTimeout/>
+                    <AnswerTimeout questionId={this.state.questionId}/>
                     {launchButton}
                 </div>
             </Card>
