@@ -40,28 +40,18 @@ export default {
         },
         launchNextQuestion: (parent: any, {operatorId}: { operatorId: string }): Boolean => {
             const game = GameService.createOrGetGame(operatorId);
-            const nextQuestion = game.getNextQuestion();
-            if (nextQuestion === undefined) {
-                // end of questions
-                return false;
-            }
-
-            const correctAnswer = nextQuestion.answers.find(answer => answer.isCorrect);
-
-            pubsub.publish(Triggers.NextQuestion, {
-                onNextQuestion: nextQuestion,
-                questionJoinId: game.quiz.joinId
-            });
-
-            setTimeout(() => {
+            game.publishNextQuestion((nextQuestion: Question) => {
+                pubsub.publish(Triggers.NextQuestion, {
+                    onNextQuestion: nextQuestion,
+                    questionJoinId: game.quiz.joinId
+                });
+            }, (correctAnswer: Answer) => {
                 pubsub.publish(Triggers.QuestionTimeout, {
                     onQuestionTimeout: correctAnswer,
                     answerJoinId: game.quiz.joinId
                 });
-            }, 10000);
-
-            return true;
-
+            });
+            return !game.isFinished();
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);

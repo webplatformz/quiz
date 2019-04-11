@@ -65,8 +65,8 @@ describe('launchNextQuestion', () => {
     });
 
     test('should return false once all questions were launched', () => {
-        let result = resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
-        result = resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+        resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+        const result = resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
         expect(result).toBe(false);
     });
 
