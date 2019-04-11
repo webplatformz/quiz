@@ -54,7 +54,6 @@ export class Game {
             correctAnswerCallback(correctAnswer);
             rankingCallback(new Ranking(this.state.players, isLastQuestion));
             this.state.questionStartTimestamp = -1;
-            console.log("Sent Q-Timout", correctAnswer);
         }, 10000);
 
         this.state.questionStartTimestamp = new Date().getTime();
