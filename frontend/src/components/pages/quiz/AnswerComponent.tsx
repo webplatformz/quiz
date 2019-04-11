@@ -1,46 +1,54 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Answer} from '../../../../../server/domain/answer';
 import {Button} from 'react-mdl';
 
 interface AnswerComponentProps {
     answer: Answer;
     onClick: any;
-    isCorrectAnswer: boolean,
+    correctAnswerId: string | undefined,
     isSelected: boolean
 }
 
+export class AnswerComponent extends Component<AnswerComponentProps, any> {
 
-export const AnswerComponent = (props: AnswerComponentProps) => {
-    return (
-        <Button raised ripple style={{
-            backgroundColor: getBackgroundColor(props.isCorrectAnswer),
-            border: getBorder(props.isSelected),
-            boxSizing: 'border-box',
-            fontSize: 'large',
-            margin: '16px 0',
-            padding: '12px 5px',
-            height: 'auto',
-            width: '100%',
-            cursor: 'pointer'
-        }}
-                onClick={props.onClick}>
-            {props.answer.answer}
-        </Button>
-    );
-};
+    render() {
+        return (
+            <Button raised ripple style={{
+                backgroundColor: this.getBackgroundColor(),
+                border: this.getBorder(),
+                boxSizing: 'border-box',
+                fontSize: 'large',
+                margin: '16px 0',
+                padding: '12px 5px',
+                height: 'auto',
+                width: '100%',
+                cursor: 'pointer'
+            }}
+                    onClick={this.props.onClick}>
+                {this.props.answer.answer}
+            </Button>
+        );
+    }
 
-function getBorder(isSelected: boolean): string {
-    if (isSelected) {
-        return '5px solid #3ea026';
-    } else {
+    private getBorder(): string {
+        if (this.props.isSelected) {
+            if(!this.props.correctAnswerId || this.isCorrectAnswer()) {
+                return '3px solid #3ea026';
+            }
+            return '3px solid #f44336';
+        }
         return 'none';
     }
-}
 
-function getBackgroundColor(isCorrectAnswer: boolean): string {
-    if (isCorrectAnswer) {
-        return 'rgba(7,182,49,0.6)';
-    } else {
-        return 'default';
+    private getBackgroundColor(): string {
+        if (this.isCorrectAnswer()) {
+            return 'rgba(7,182,49,0.6)';
+        } else {
+            return 'default';
+        }
+    }
+
+    private isCorrectAnswer() {
+        return this.props.answer.id === this.props.correctAnswerId;
     }
 }

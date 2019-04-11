@@ -8,7 +8,6 @@ import QuestionContainer from './QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
 import {Answer} from '../../../../../server/domain/answer';
 import {Ranking} from '../../../../../server/domain/ranking';
-import {RankingContainer} from './Ranking';
 
 interface QuizContainerState {
     joinId: string | undefined,
@@ -74,6 +73,7 @@ const RANKING_CHANGED_SUBSCRIPTION = gql`
             players {
                 id
                 name
+                score
             }
             isFinalState
         }
@@ -83,8 +83,7 @@ const RANKING_CHANGED_SUBSCRIPTION = gql`
 enum ActiveComponent {
     START_PAGE,
     WAITING_ROOM,
-    QUESTION,
-    RANKING_LIST
+    QUESTION
 }
 
 class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState> {
@@ -164,12 +163,12 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            console.log('next question received');
             this.setState({
                 ...this.state,
                 currentQuestion: response.data.onNextQuestion,
                 activeComponent: ActiveComponent.QUESTION,
-                correctAnswer: undefined
+                correctAnswer: undefined,
+                ranking: undefined
             });
         })
     }
@@ -194,8 +193,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         }).subscribe((response: any) => {
             this.setState({
                 ...this.state,
-                players: response.data.onRankingChanged.players,
-                isFinalState: response.data.onRankingChanged.isFinalState
+                ranking: response.data.onRankingChanged
             });
         })
     }
@@ -231,10 +229,9 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                         playerId={this.state.playerId}
                         operatorId={this.state.operatorId}
                         question={this.state.currentQuestion}
+                        ranking={this.state.ranking}
                         correctAnswerId={correctAnswerId}/>
                 );
-            case ActiveComponent.RANKING_LIST:
-                return (<RankingContainer players={this.state.players} isFinalState={this.state.isFinalState}/>)
         }
     }
 }
