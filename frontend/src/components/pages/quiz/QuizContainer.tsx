@@ -97,7 +97,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         joinId: undefined,
         operatorId: undefined,
         players: [],
-        activeComponent: ActiveComponent.QUESTION,
+        activeComponent: ActiveComponent.START_PAGE,
         currentQuestion: dummyQuestion,
         correctAnswer: undefined,
         question: undefined,
