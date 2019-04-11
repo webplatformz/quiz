@@ -26,6 +26,10 @@ const typeDefs = gql(
 const app = express();
 app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
+app.get('/operator/*', (req, res) => {
+    const pathToIndexFile = path.join(__dirname, '../../frontend/build/index.html');
+    res.sendFile(pathToIndexFile);
+});
 
 const server = new ApolloServer({
     typeDefs,
