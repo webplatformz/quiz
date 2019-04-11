@@ -46,7 +46,7 @@ function getBorder(answerState: AnswerComponentState = AnswerComponentState.NONE
 function getBackgroundColor(answerState: AnswerComponentState = AnswerComponentState.NONE): string {
     switch (answerState) {
         case AnswerComponentState.CHOSEN:
-            return '';
+            return 'default';
         case AnswerComponentState.CORRECT:
             return '#07b631';
         case AnswerComponentState.WRONG:
