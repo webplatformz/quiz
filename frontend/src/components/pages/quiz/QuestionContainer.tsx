@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Question} from '../../../../../server/domain/question';
 import {Button, CardText} from 'react-mdl';
+import {AnswerComponent} from './AnswerComponent';
 
 interface QuestionContainerProps {
     question: Question;
@@ -14,21 +15,9 @@ export class QuestionContainer extends Component<QuestionContainerProps, any> {
                 <div><h1>{this.props.question.question}</h1></div>
                 <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
                     {
-                        this.props.question.answers.map((answer => {
-                            return (
-                                <div key={answer.id} style={
-                                    {
-                                        minWidth: '400px',
-                                        backgroundColor: 'white',
-                                        padding: '40px',
-                                        fontSize: 'large',
-                                        margin: '20px',
-                                        cursor: 'pointer',
-                                        boxShadow: '10px 10px 5px 0px rgba(0,0,0,0.75)'
-                                    }}>
-                                    {answer.answer}
-                                </div>)
-                        }))
+                        this.props.question.answers
+                            .map(answer => <AnswerComponent key={answer.id} answer={answer}
+                                                            onClick={this.answerQuestion.bind(this, answer.id)}/>)
                     }
                 </div>
                 <div>
@@ -38,6 +27,10 @@ export class QuestionContainer extends Component<QuestionContainerProps, any> {
                 </div>
             </div>
         )
+    }
+
+    private answerQuestion(answerId: string) {
+        console.log(`Answer with ID ${answerId}`);
     }
 
     private launchNextQuestion() {
