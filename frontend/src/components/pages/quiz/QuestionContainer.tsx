@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import {Question} from '../../../../../server/domain/question';
 import {Button, Card} from 'react-mdl';
-import {AnswerComponent, AnswerComponentState} from './AnswerComponent';
+import {AnswerComponent} from './AnswerComponent';
 import {AnswerTimeout} from './AnswerTimeout';
-import {gql} from "apollo-boost";
-import {withApollo, WithApolloClient} from "react-apollo";
+import {gql} from 'apollo-boost';
+import {withApollo, WithApolloClient} from 'react-apollo';
 
 interface QuestionContainerProps {
     joinId: string | undefined;
@@ -32,7 +32,7 @@ const LAUNCH_QUESTION_MUTATION = gql`
 
 class QuestionContainer extends Component<WithApolloClient<QuestionContainerProps>, QuestionContainerState> {
     state = {
-        chosenAnswerId: undefined,
+        chosenAnswerId: undefined
     };
 
     constructor(props: WithApolloClient<QuestionContainerProps>) {
@@ -44,20 +44,21 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
     render() {
         let answers;
         let launchButton;
-        if(!this.props.operatorId) {
+        if (!this.props.operatorId) {
             answers = (
                 <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
                     {
                         this.props.question.answers
                             .map(answer => <AnswerComponent key={answer.id}
                                                             answer={answer}
-                                                            state={this.getAnswerState(answer.id)}
+                                                            isCorrectAnswer={answer.id === this.props.correctAnswerId}
+                                                            isSelected={answer.id === this.state.chosenAnswerId}
                                                             onClick={this.answerQuestion.bind(this, answer.id)}/>)
                     }
                 </div>
             );
         } else {
-            if(this.props.correctAnswerId) {
+            if (this.props.correctAnswerId) {
                 launchButton = (
                     <Button raised ripple colored onClick={this.launchNextQuestion}>
                         Launch next question
@@ -82,25 +83,6 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
                 </div>
             </Card>
         )
-    }
-
-    private getAnswerState(answerId: string): AnswerComponentState {
-        // Question timeout has been reached
-        if (this.props.correctAnswerId) {
-            if (this.state.chosenAnswerId && this.state.chosenAnswerId === answerId) {
-                return this.props.correctAnswerId === this.state.chosenAnswerId ? AnswerComponentState.CORRECT : AnswerComponentState.WRONG;
-            } else if(this.props.correctAnswerId === answerId){
-                return AnswerComponentState.WRONG;
-            }
-        } else {
-            if (this.state.chosenAnswerId && answerId === this.state.chosenAnswerId) {
-                return AnswerComponentState.CHOSEN;
-            } else {
-                return AnswerComponentState.NONE;
-            }
-        }
-        return AnswerComponentState.NONE;
-
     }
 
     private answerQuestion(answerId: string) {
