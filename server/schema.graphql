@@ -8,9 +8,9 @@ type Mutation {
     updateQuiz(input: QuizInput!): Quiz!
     join(input: JoinInput!): QuizStart!
     joinAsOperator(operatorId: String!): QuizOperator!
-    launchNextQuestion(operatorId: String!): Question!
+    launchNextQuestion(operatorId: String!): Boolean!
     # Returns the correct answer
-    answerQuestion(playerId: ID!, answerId: ID!): Answer!
+    answerQuestion(playerId: ID!, answerId: ID!): Boolean!
 }
 
 type Subscription {

@@ -4,4 +4,8 @@ export class Question {
     constructor(public id: string, public question: string, public answers: Answer[]) {
 
     }
+
+    getCorrectAnswer() {
+        return this.answers.find(answer => answer.isCorrect);
+    }
 }
