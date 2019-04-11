@@ -18,7 +18,7 @@ const pubsub = new PubSub();
 export default {
     Query: {
         info: async (parent?: any, args?: any) => {
-            return 'Hello from GraphQL 2'
+            return `Hi from the Z-QUIZ server. It's ${new Date()}`;
         }
     },
     Mutation: {

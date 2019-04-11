@@ -8,6 +8,7 @@ import QuestionContainer from './QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
 import {Answer} from '../../../../../server/domain/answer';
 import {Ranking} from '../../../../../server/domain/ranking';
+import {RankingContainer} from './Ranking';
 
 interface QuizContainerState {
     joinId: string | undefined,
@@ -83,6 +84,7 @@ enum ActiveComponent {
     START_PAGE,
     WAITING_ROOM,
     QUESTION,
+    RANKING_LIST
 }
 
 class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState> {
@@ -132,13 +134,6 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 });
                 this.subscribeToQuizEvents();
             });
-    }
-
-    subscribeToQuizEvents(): void {
-        this.subscribeToPlayerJoined();
-        this.subscribeToNextQuestion();
-        this.subscribeToQuestionTimeout();
-        this.subscribeToRankingChanged();
     }
 
     subscribeToPlayerJoined(): void {
@@ -231,7 +226,8 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                         question={this.state.currentQuestion}
                         correctAnswerId={correctAnswerId}/>
                 );
-
+            case ActiveComponent.RANKING_LIST:
+                return (<RankingContainer players={this.state.players} isFinalState={this.state.isFinalState}/>)
         }
     }
 }
