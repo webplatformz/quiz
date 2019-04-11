@@ -14,7 +14,6 @@ import {Ranking} from "../domain/ranking";
 
 const pubsub = new PubSub();
 
-
 export default {
     Query: {
         info: async (parent?: any, args?: any) => {
@@ -49,12 +48,14 @@ export default {
             const correctAnswer = nextQuestion.answers.find(answer => answer.isCorrect);
 
             pubsub.publish('NEXT_QUESTION', {
-                onNextQuestion: nextQuestion
+                onNextQuestion: nextQuestion,
+                questionJoinId: game.quiz.joinId
             });
 
             setTimeout(() => {
                 pubsub.publish('QUESTION_TIMEOUT', {
-                    onQuestionTimeout: correctAnswer
+                    onQuestionTimeout: correctAnswer,
+                    answerJoinId: game.quiz.joinId
                 });
             }, 10000);
 
