@@ -10,6 +10,7 @@ import {Answer} from '../domain/answer';
 import {JoinInput} from '../domain/join-input';
 import {QuizOperator} from '../domain/quiz-operator';
 import {withFilter} from 'graphql-subscriptions';
+import {Ranking} from "../domain/ranking";
 
 const pubsub = new PubSub();
 
@@ -61,6 +62,24 @@ export default {
             subscribe: withFilter(() => pubsub.asyncIterator('PLAYER_JOINED'),
                 ({onPlayerJoined}: { onPlayerJoined: QuizStart }, {joinId}: { joinId: string }) =>
                     onPlayerJoined.joinId === joinId
+            )
+        },
+        onNextQuestion: {
+            subscribe: withFilter(() => pubsub.asyncIterator('ON_NEXT_QUESTION'),
+                ({onNextQuestion, questionJoinId}: { onNextQuestion: Question, questionJoinId: string }, {joinId}: { joinId: string }) =>
+                    questionJoinId === joinId
+            )
+        },
+        onQuestionTimeout: {
+            subscribe: withFilter(() => pubsub.asyncIterator('ON_QUESTION_TIMEOUT'),
+                ({onQuestionTimeout, answerJoinId}: { onQuestionTimeout: Answer, answerJoinId: string }, {joinId}: { joinId: string }) =>
+                    answerJoinId === joinId
+            )
+        },
+        onRankingChanged: {
+            subscribe: withFilter(() => pubsub.asyncIterator('ON_RANKING_CHANGED'),
+                ({onRankingChanged, rankingJoinId}: { onRankingChanged: Ranking, rankingJoinId: string }, {joinId}: { joinId: string }) =>
+                    rankingJoinId === joinId
             )
         }
     }
