@@ -47,9 +47,9 @@ test('registerOnPlayerJoined should call callback for player joined', () => {
 
 test('publishNextQuestion should return correct question in callback', () => {
     const quiz = QuizRepository.createQuiz();
-    const answer1 = new Answer('1', 'Alpha Romeo', false);
-    const answer2 = new Answer('2', 'Mercedes', true);
-    const question1 = new Question('1', 'Which car company is older', [answer1, answer2]);
+    const falseAnswer = new Answer('1', 'Alpha Romeo', false);
+    const correctAnswer = new Answer('2', 'Mercedes', true);
+    const question1 = new Question('1', 'Which car company is older', [falseAnswer, correctAnswer]);
 
     quiz.name = 'Demo Quiz';
     quiz.questions = [question1];
@@ -71,4 +71,8 @@ test('publishNextQuestion should return correct question in callback', () => {
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
 
     jest.runAllTimers();
+
+    expect(correctAnswerCallback).toHaveBeenCalledTimes(1);
+    expect(correctAnswerCallback).toBeCalledWith(correctAnswer);
+
 });
