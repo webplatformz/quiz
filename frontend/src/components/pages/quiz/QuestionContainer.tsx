@@ -42,6 +42,12 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         this.launchNextQuestion = this.launchNextQuestion.bind(this);
     }
 
+    componentWillReceiveProps(newProps: QuestionContainerProps) {
+        if (newProps.correctAnswerId === undefined) {
+            this.state.chosenAnswerId = undefined;
+        }
+    }
+
     render() {
         let answers;
         let launchButton;
