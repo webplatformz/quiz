@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import {Question} from '../../../../../server/domain/question';
-import {Button, CardText} from 'react-mdl';
-import {AnswerComponent} from './AnswerComponent';
+import {Button} from 'react-mdl';
+import {AnswerComponent, AnswerComponentState} from './AnswerComponent';
 import {AnswerTimeout} from './AnswerTimeout';
 
 interface QuestionContainerProps {
     question: Question;
+    correctAnswerId: string | undefined;
 }
 
 interface QuestionContainerState {
@@ -15,7 +16,7 @@ interface QuestionContainerState {
 export class QuestionContainer extends Component<QuestionContainerProps, QuestionContainerState> {
 
     state = {
-        chosenAnswerId: undefined
+        chosenAnswerId: undefined,
     };
 
     render() {
@@ -27,7 +28,7 @@ export class QuestionContainer extends Component<QuestionContainerProps, Questio
                         this.props.question.answers
                             .map(answer => <AnswerComponent key={answer.id}
                                                             answer={answer}
-                                                            isChosen={this.state.chosenAnswerId === answer.id}
+                                                            state={this.getAnswerState(answer.id)}
                                                             onClick={this.answerQuestion.bind(this, answer.id)}/>)
                     }
                 </div>
@@ -43,6 +44,25 @@ export class QuestionContainer extends Component<QuestionContainerProps, Questio
                 </div>
             </div>
         )
+    }
+
+    private getAnswerState(answerId: string): AnswerComponentState {
+        // Question timeout has been reached
+        if (this.props.correctAnswerId) {
+            if (this.state.chosenAnswerId && this.state.chosenAnswerId === answerId) {
+                return this.props.correctAnswerId === this.state.chosenAnswerId ? AnswerComponentState.CORRECT : AnswerComponentState.WRONG;
+            } else if(this.props.correctAnswerId === answerId){
+                return AnswerComponentState.WRONG;
+            }
+        } else {
+            if (this.state.chosenAnswerId && answerId === this.state.chosenAnswerId) {
+                return AnswerComponentState.CHOSEN;
+            } else {
+                return AnswerComponentState.NONE;
+            }
+        }
+        return AnswerComponentState.NONE;
+
     }
 
     private answerQuestion(answerId: string) {

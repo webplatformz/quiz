@@ -16,7 +16,7 @@ interface QuizContainerState {
     currentQuestion: Question | undefined,
     players: Player[],
     question: Question | undefined,
-    answer: Answer | undefined,
+    correctAnswer: Answer | undefined,
     ranking: Ranking | undefined,
     isFinalState: boolean
 }
@@ -95,9 +95,9 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         joinId: undefined,
         operatorId: undefined,
         players: [],
-        activeComponent: ActiveComponent.START_PAGE,
+        activeComponent: ActiveComponent.QUESTION,
         currentQuestion: dummyQuestion,
-        answer: undefined,
+        correctAnswer: undefined,
         question: undefined,
         ranking: undefined,
         isFinalState: false
@@ -124,7 +124,10 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, players: response.data.onPlayerJoined.players});
+            this.setState({
+                ...this.state,
+                players: response.data.onPlayerJoined.players
+            });
         })
     }
 
@@ -135,7 +138,11 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, question: response.data.onNextQuestion.question});
+            this.setState({
+                ...this.state,
+                question: response.data.onNextQuestion.question,
+                activeComponent: ActiveComponent.QUESTION
+            });
         })
     }
 
@@ -146,7 +153,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, answer: response.data.onQuestionTimeout.answer});
+            this.setState({...this.state, correctAnswer: response.data.onQuestionTimeout.answer});
         })
     }
 
@@ -187,7 +194,10 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 if (!this.state.currentQuestion) {
                     throw new Error('Invalid state. Question is not defined');
                 }
-                return (<QuestionContainer question={this.state.currentQuestion}/>)
+                const correctAnswerId = this.state.correctAnswer ? this.state.correctAnswer.id : undefined;
+                return (<QuestionContainer
+                    question={this.state.currentQuestion}
+                    correctAnswerId={correctAnswerId}/>)
 
         }
     }
