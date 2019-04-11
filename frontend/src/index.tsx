@@ -20,7 +20,7 @@ const httpLink: ApolloLink = createHttpLink({
 });
 
 const webSocketLink = new WebSocketLink({
-    uri: WebsocketUtils.websocketUrlByPath('graphql'),
+    uri: WebsocketUtils.websocketUrlByPath('/graphql'),
     options: {
         reconnect: true,
     }

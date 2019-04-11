@@ -1,26 +1,38 @@
 import React, {Component} from 'react'
-import JoinQuiz from './JoinQuiz';
-import CreateQuiz from './CreateQuiz';
 import {Player} from '../../../../../server/domain/player';
 import {withApollo, WithApolloClient} from 'react-apollo';
 import {gql} from 'apollo-boost';
-import PlayerList from './PlayerList';
-import {Grid, Cell} from 'react-mdl';
-import {WaitingRoom} from './WaitingRoom';
+import WaitingRoom from './WaitingRoom';
 import {StartPage} from './StartPage';
-import {Question} from "../../../../../server/domain/question";
-import {Answer} from "../../../../../server/domain/answer";
-import {Ranking} from "../../../../../server/domain/ranking";
+import {QuestionContainer} from './QuestionContainer';
+import {Question} from '../../../../../server/domain/question';
+import {Answer} from '../../../../../server/domain/answer';
+import {Ranking} from '../../../../../server/domain/ranking';
 
 interface QuizContainerState {
     joinId: string | undefined,
     operatorId: string | undefined,
+    activeComponent: ActiveComponent,
+    currentQuestion: Question | undefined,
     players: Player[],
     question: Question | undefined,
-    answer: Answer | undefined,
+    correctAnswer: Answer | undefined,
     ranking: Ranking | undefined,
     isFinalState: boolean
 }
+
+const JOIN_AS_OPERATOR_MUTATION = gql`
+    mutation joinAsOperator($operatorId: String!){
+        joinAsOperator(operatorId: $operatorId) {
+            joinId
+            operatorId 
+            players {
+                id
+                name
+            }
+        }
+    }
+`;
 
 const PLAYER_JOIN_SUBSCRIPTION = gql`
     subscription onPlayerJoined($joinId: String!){
@@ -61,12 +73,46 @@ const RANKING_CHANGED_SUBSCRIPTION = gql`
     }
 `;
 
+enum ActiveComponent {
+    START_PAGE,
+    WAITING_ROOM,
+    QUESTION,
+}
+
+
+const dummyQuestion: Question = {
+    id: 'Q1',
+    question: 'Das ist eine durchschnittliche Frage',
+    answers: [{
+        id: 'A1',
+        answer: 'Das ist die Antwort 1',
+        isCorrect: false
+    }, {
+        id: 'A2',
+        answer: 'Das ist die Antwort 2',
+        isCorrect: false
+    }, {
+        id: 'A3',
+        answer: 'Das ist die Antwort 3',
+        isCorrect: false
+    }, {
+        id: 'A4',
+        answer: 'Das ist die Antwort 4',
+        isCorrect: false
+    }
+    ],
+    getCorrectAnswer(): any {
+    }
+};
+
 class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState> {
     state: QuizContainerState = {
         joinId: undefined,
         operatorId: undefined,
         players: [],
-        answer: undefined,
+        activeComponent: ActiveComponent.START_PAGE,
+        currentQuestion: dummyQuestion,
+        correctAnswer: undefined,
         question: undefined,
         ranking: undefined,
         isFinalState: false
@@ -75,15 +121,31 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     constructor(props: any) {
         super(props);
         this.joinQuiz = this.joinQuiz.bind(this);
-        this.state.operatorId = this.props.match.params.operatorId;
+        const operatorId = this.props.match.params.operatorId;
+        if(operatorId) {
+            this.joinQuizAsOperator(operatorId);
+        }
     }
 
     joinQuiz(joinId: string, players: Player[]) {
-        this.setState({...this.state, joinId, players});
+        this.setState({...this.state, joinId, players, activeComponent: ActiveComponent.WAITING_ROOM});
         this.subscribeToPlayerJoined();
         this.subscribeToNextQuestion();
         this.subscribeToQuestionTimeout();
         this.subscribeToRankingChanged();
+    }
+
+    joinQuizAsOperator(operatorId: string): void {
+        this.props.client.mutate({
+            mutation: JOIN_AS_OPERATOR_MUTATION,
+                variables: {
+                    operatorId: operatorId
+                }
+            })
+            .then((response: any) => {
+                this.setState({...this.state, operatorId: response.data.joinAsOperator.operatorId});
+                this.joinQuiz(response.data.joinAsOperator.joinId, response.data.joinAsOperator.players);
+            });
     }
 
     subscribeToPlayerJoined(): void {
@@ -93,7 +155,10 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, players: response.data.onPlayerJoined.players});
+            this.setState({
+                ...this.state,
+                players: response.data.onPlayerJoined.players
+            });
         })
     }
 
@@ -104,7 +169,11 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, question: response.data.onNextQuestion.question});
+            this.setState({
+                ...this.state,
+                question: response.data.onNextQuestion.question,
+                activeComponent: ActiveComponent.QUESTION
+            });
         })
     }
 
@@ -115,7 +184,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, answer: response.data.onQuestionTimeout.answer});
+            this.setState({...this.state, correctAnswer: response.data.onQuestionTimeout.answer});
         })
     }
 
@@ -135,19 +204,33 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     }
 
     render() {
-        if (this.state.joinId) {
-            return (
-                <div style={{width: '80%', margin: 'auto', paddingTop: '16px'}}>
-                    <WaitingRoom players={this.state.players} operatorId={this.state.operatorId}/>
-                </div>
-            );
-        }
-
         return (
-            <div style={{width: '80%', margin: 'auto'}}>
-                <StartPage joinQuiz={this.joinQuiz}/>
+            <div style={{display: 'flex', maxWidth: '600px', margin: 'auto', padding: '16px'}}>
+                {this.renderComponent()}
             </div>
-        )
+        );
+    }
+
+    private renderComponent() {
+        switch (this.state.activeComponent) {
+            case ActiveComponent.START_PAGE:
+                return (
+                    <StartPage joinQuiz={this.joinQuiz}/>
+                );
+            case ActiveComponent.WAITING_ROOM:
+                return (
+                    <WaitingRoom players={this.state.players} operatorId={this.state.operatorId}/>
+                );
+            case ActiveComponent.QUESTION:
+                if (!this.state.currentQuestion) {
+                    throw new Error('Invalid state. Question is not defined');
+                }
+                const correctAnswerId = this.state.correctAnswer ? this.state.correctAnswer.id : undefined;
+                return (<QuestionContainer
+                    question={this.state.currentQuestion}
+                    correctAnswerId={correctAnswerId} />)
+
+        }
     }
 }
 

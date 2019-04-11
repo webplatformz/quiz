@@ -37,6 +37,7 @@ type QuizOperator {
     name: String!
     joinId: String!
     operatorId: String!
+    players: [Player!]!
 }
 
 input JoinInput {

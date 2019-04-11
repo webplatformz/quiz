@@ -5,6 +5,7 @@ import {SimpleGuid} from '../util/simple-guid';
 import {Quiz} from '../domain/quiz';
 import {Question} from "../domain/question";
 import {Answer} from "../domain/answer";
+import {QuizOperator} from "../domain/quiz-operator";
 
 export class Game {
     private state: QuizState = new QuizState();
@@ -46,6 +47,14 @@ export class Game {
 
     isFinished(): boolean {
         return !this.quiz.questions[this.state.currentQuestionIndex - 1];
+    }
+
+    getQuizOperator(): QuizOperator {
+        const quizName = this.quiz.name;
+        if (!quizName) {
+            throw new Error(`Quiz name must be defined to retrieve an operator for quiz with id ${this.quiz.id}`);
+        }
+        return new QuizOperator(quizName, this.quiz.joinId, this.quiz.operatorId, this.state.players);
     }
 
     private notifyOnPlayerJoinedSubscribers() {

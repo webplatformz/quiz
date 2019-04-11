@@ -11,25 +11,16 @@ class PlayerList extends Component<PlayerListProps, any> {
     render() {
         const playerList = this.props.players.map((player: Player) => {
             return (
-                <ListItem>
-                    <ListItemContent icon="person" key={player.id}>{player.name}</ListItemContent>
+                <ListItem key={player.id} style={{padding: 0, minHeight: '36px'}}>
+                    <ListItemContent icon="person" >{player.name}</ListItemContent>
                 </ListItem>
             );
         });
 
-        let content = <p>Waiting for players to join ...</p>;
         if(playerList.length > 0) {
-            content = <List>{playerList}</List>;
+            return <List style={{margin: 0}}>{playerList}</List>;
         }
-        return (
-            <Card shadow={0} style={{width: '500px', margin: 'auto'}}>
-                <CardTitle style={{textAlign: "center"}}>Players</CardTitle>
-                <CardText>
-                    {content}
-                    <Spinner />
-                </CardText>
-            </Card>
-        )
+        return <p>Waiting for players to join ...</p>;
     }
 }
 

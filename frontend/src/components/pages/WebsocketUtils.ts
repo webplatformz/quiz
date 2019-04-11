@@ -4,7 +4,6 @@ export class WebsocketUtils {
         return this.websocketProtocolByLocation() +
             window.location.hostname +
             this.websocketPortWithColonByLocation() +
-            window.location.pathname +
             path;
     }
 

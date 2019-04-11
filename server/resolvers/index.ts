@@ -36,7 +36,7 @@ export default {
                     onPlayerJoined: quizStart
                 });
             });
-            return game.quiz.getQuizOperator();
+            return game.getQuizOperator();
         },
         launchNextQuestion: (parent: any, {operatorId}: { operatorId: string }): Boolean => {
             const game = GameService.createOrGetGame(operatorId);
