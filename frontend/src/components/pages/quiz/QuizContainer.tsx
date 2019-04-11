@@ -181,7 +181,6 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            console.log('Q-Timeout:', response);
             this.setState({...this.state, correctAnswer: response.data.onQuestionTimeout});
         })
     }

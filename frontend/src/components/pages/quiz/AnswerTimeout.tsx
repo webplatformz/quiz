@@ -1,26 +1,16 @@
 import React, {Component} from 'react'
 import {ProgressBar} from 'react-mdl';
 
-interface AnswerTimeoutState {
-    remainingTime: number;
+interface AnswerTimeoutProps {
+    remainingTime: number
 }
 
-export class AnswerTimeout extends Component<any, AnswerTimeoutState> {
-    state = {
-        remainingTime: 100
-    };
-
-    /*componentDidMount(): void {
-        setInterval(() => {
-            this.state.remainingTime
-        },100)
-    }*/
+export class AnswerTimeout extends Component<AnswerTimeoutProps, any> {
 
     render() {
         return (
-            <div>
-                <ProgressBar progress={this.state.remainingTime} />
+            <div style={{width: '100%', display: 'block'}}>
+                <ProgressBar progress={100 - this.props.remainingTime} style={{width: '100%'}} />
             </div>);
     }
-
 }

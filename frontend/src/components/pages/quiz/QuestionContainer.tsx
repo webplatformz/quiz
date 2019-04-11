@@ -16,6 +16,7 @@ interface QuestionContainerProps {
 
 interface QuestionContainerState {
     chosenAnswerId: string | undefined;
+    remainingTime: number
 }
 
 const ANSWER_QUESTION_MUTATION = gql`
@@ -30,9 +31,12 @@ const LAUNCH_QUESTION_MUTATION = gql`
     }
 `;
 
+const ANSWER_TIME = 100;
+
 class QuestionContainer extends Component<WithApolloClient<QuestionContainerProps>, QuestionContainerState> {
     state = {
-        chosenAnswerId: undefined
+        chosenAnswerId: undefined,
+        remainingTime: ANSWER_TIME
     };
 
     constructor(props: WithApolloClient<QuestionContainerProps>) {
@@ -40,6 +44,9 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         this.launchNextQuestion = this.launchNextQuestion.bind(this);
     }
 
+    componentDidMount(): void {
+        this.startCountdown();
+    }
 
     render() {
         let answers;
@@ -60,7 +67,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         } else {
             if (this.props.correctAnswerId) {
                 launchButton = (
-                    <Button raised ripple colored onClick={this.launchNextQuestion}>
+                    <Button raised ripple colored style={{marginTop: '24px'}} onClick={this.launchNextQuestion}>
                         Launch next question
                     </Button>
                 );
@@ -75,10 +82,11 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
                 {answers}
                 <div style={{
                     display: 'flex',
+                    flexWrap: 'wrap',
                     marginTop: '20px',
                     justifyContent: 'space-around'
                 }}>
-                    <AnswerTimeout/>
+                    <AnswerTimeout remainingTime={this.state.remainingTime}/>
                     {launchButton}
                 </div>
             </Card>
@@ -105,7 +113,20 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
             variables: {
                 operatorId: this.props.operatorId
             }
-        });
+        })
+            .then(() => this.startCountdown());
+    }
+
+    private startCountdown(): void {
+        this.setState({...this.state, remainingTime: ANSWER_TIME});
+        const countDownInterval = setInterval(() => {
+            const remainingTime = this.state.remainingTime - 1;
+            this.setState({...this.state, remainingTime});
+
+            if(remainingTime === 0) {
+                clearInterval(countDownInterval);
+            }
+        },100);
     }
 }
 
