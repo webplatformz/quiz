@@ -45,9 +45,6 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
     render() {
         let answers;
         let launchButton;
-        if (this.props.question.id !== this.state.questionId) {
-            this.setState({...this.state, questionId: this.props.question.id});
-        }
         if (!this.props.operatorId) {
             answers = (
                 <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
@@ -83,7 +80,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
                     marginTop: '20px',
                     justifyContent: 'space-around'
                 }}>
-                    <AnswerTimeout questionId={this.state.questionId}/>
+                    <AnswerTimeout questionId={this.props.question.id}/>
                     {launchButton}
                 </div>
             </Card>
