@@ -10,8 +10,8 @@ import {Answer} from '../domain/answer';
 import {JoinInput} from '../domain/join-input';
 import {QuizOperator} from '../domain/quiz-operator';
 import {withFilter} from 'graphql-subscriptions';
-import {Ranking} from "../domain/ranking";
-import {Triggers} from "./triggers";
+import {Ranking} from '../domain/ranking';
+import {Triggers} from './triggers';
 
 const pubsub = new PubSub();
 
@@ -86,6 +86,14 @@ export default {
             });
 
             return QuizRepository.update(quiz);
+        },
+        answerQuestion: (parent: any, {joinId, playerId, answerId}: { joinId: string, playerId: string, answerId: string }) => {
+            const runningGame = GameService.getRunningGameByJoinId(joinId);
+            if (!runningGame) {
+                throw new Error(`Game with joinId ${joinId} not found.`);
+            }
+            runningGame.answerQuestion(playerId, answerId);
+            return true;
         }
     },
     Subscription: {

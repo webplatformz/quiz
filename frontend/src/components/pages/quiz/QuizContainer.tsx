@@ -25,7 +25,7 @@ const JOIN_AS_OPERATOR_MUTATION = gql`
     mutation joinAsOperator($operatorId: String!){
         joinAsOperator(operatorId: $operatorId) {
             joinId
-            operatorId 
+            operatorId
             players {
                 id
                 name
@@ -79,39 +79,13 @@ enum ActiveComponent {
     QUESTION,
 }
 
-
-const dummyQuestion: Question = {
-    id: 'Q1',
-    question: 'Das ist eine durchschnittliche Frage',
-    answers: [{
-        id: 'A1',
-        answer: 'Das ist die Antwort 1',
-        isCorrect: false
-    }, {
-        id: 'A2',
-        answer: 'Das ist die Antwort 2',
-        isCorrect: false
-    }, {
-        id: 'A3',
-        answer: 'Das ist die Antwort 3',
-        isCorrect: false
-    }, {
-        id: 'A4',
-        answer: 'Das ist die Antwort 4',
-        isCorrect: false
-    }
-    ],
-    getCorrectAnswer(): any {
-    }
-};
-
 class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState> {
     state: QuizContainerState = {
         joinId: undefined,
         operatorId: undefined,
         players: [],
         activeComponent: ActiveComponent.START_PAGE,
-        currentQuestion: dummyQuestion,
+        currentQuestion: undefined,
         correctAnswer: undefined,
         question: undefined,
         ranking: undefined,
@@ -122,7 +96,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         super(props);
         this.joinQuiz = this.joinQuiz.bind(this);
         const operatorId = this.props.match.params.operatorId;
-        if(operatorId) {
+        if (operatorId) {
             this.joinQuizAsOperator(operatorId);
         }
     }
@@ -138,10 +112,10 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     joinQuizAsOperator(operatorId: string): void {
         this.props.client.mutate({
             mutation: JOIN_AS_OPERATOR_MUTATION,
-                variables: {
-                    operatorId: operatorId
-                }
-            })
+            variables: {
+                operatorId: operatorId
+            }
+        })
             .then((response: any) => {
                 this.setState({...this.state, operatorId: response.data.joinAsOperator.operatorId});
                 this.joinQuiz(response.data.joinAsOperator.joinId, response.data.joinAsOperator.players);
@@ -228,7 +202,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 const correctAnswerId = this.state.correctAnswer ? this.state.correctAnswer.id : undefined;
                 return (<QuestionContainer
                     question={this.state.currentQuestion}
-                    correctAnswerId={correctAnswerId} />)
+                    correctAnswerId={correctAnswerId}/>)
 
         }
     }
