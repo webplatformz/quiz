@@ -11,9 +11,9 @@ import {JoinInput} from '../domain/join-input';
 import {QuizOperator} from '../domain/quiz-operator';
 import {withFilter} from 'graphql-subscriptions';
 import {Ranking} from "../domain/ranking";
+import {Triggers} from "./triggers";
 
 const pubsub = new PubSub();
-
 
 export default {
     Query: {
@@ -32,11 +32,26 @@ export default {
         joinAsOperator: (parent: any, {operatorId}: { operatorId: string }): QuizOperator => {
             const game = GameService.createOrGetGame(operatorId);
             game.registerOnPlayerJoined((quizStart: QuizStart) => {
-                pubsub.publish('PLAYER_JOINED', {
+                pubsub.publish(Triggers.PlayerJoined, {
                     onPlayerJoined: quizStart
                 });
             });
             return game.quiz.getQuizOperator();
+        },
+        launchNextQuestion: (parent: any, {operatorId}: { operatorId: string }): Boolean => {
+            const game = GameService.createOrGetGame(operatorId);
+            game.publishNextQuestion((nextQuestion: Question) => {
+                pubsub.publish(Triggers.NextQuestion, {
+                    onNextQuestion: nextQuestion,
+                    questionJoinId: game.quiz.joinId
+                });
+            }, (correctAnswer: Answer) => {
+                pubsub.publish(Triggers.QuestionTimeout, {
+                    onQuestionTimeout: correctAnswer,
+                    answerJoinId: game.quiz.joinId
+                });
+            });
+            return !game.isFinished();
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);
@@ -59,25 +74,25 @@ export default {
     },
     Subscription: {
         onPlayerJoined: {
-            subscribe: withFilter(() => pubsub.asyncIterator('PLAYER_JOINED'),
+            subscribe: withFilter(() => pubsub.asyncIterator(Triggers.PlayerJoined),
                 ({onPlayerJoined}: { onPlayerJoined: QuizStart }, {joinId}: { joinId: string }) =>
                     onPlayerJoined.joinId === joinId
             )
         },
         onNextQuestion: {
-            subscribe: withFilter(() => pubsub.asyncIterator('ON_NEXT_QUESTION'),
+            subscribe: withFilter(() => pubsub.asyncIterator(Triggers.NextQuestion),
                 ({onNextQuestion, questionJoinId}: { onNextQuestion: Question, questionJoinId: string }, {joinId}: { joinId: string }) =>
                     questionJoinId === joinId
             )
         },
         onQuestionTimeout: {
-            subscribe: withFilter(() => pubsub.asyncIterator('ON_QUESTION_TIMEOUT'),
+            subscribe: withFilter(() => pubsub.asyncIterator(Triggers.QuestionTimeout),
                 ({onQuestionTimeout, answerJoinId}: { onQuestionTimeout: Answer, answerJoinId: string }, {joinId}: { joinId: string }) =>
                     answerJoinId === joinId
             )
         },
         onRankingChanged: {
-            subscribe: withFilter(() => pubsub.asyncIterator('ON_RANKING_CHANGED'),
+            subscribe: withFilter(() => pubsub.asyncIterator(Triggers.RankingChanged),
                 ({onRankingChanged, rankingJoinId}: { onRankingChanged: Ranking, rankingJoinId: string }, {joinId}: { joinId: string }) =>
                     rankingJoinId === joinId
             )

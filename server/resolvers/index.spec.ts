@@ -1,6 +1,8 @@
 import mockingoose from 'mockingoose';
 import resolvers from './index';
 import Meta from '../persistence/Meta';
+import {Quiz} from "../domain/quiz";
+
 
 xtest('basic', async () => {
     const _doc = {
@@ -28,6 +30,72 @@ test('createQuiz returns an id', () => {
     expect(result).not.toBe(result2);
 });
 
+describe('launchNextQuestion', () => {
+
+    let quiz: Quiz;
+
+    beforeEach(() => {
+
+        const quizId = resolvers.Mutation.createQuiz();
+        quiz = resolvers.Mutation.updateQuiz(undefined, {
+            input: {
+                id: quizId,
+                name: 'MyNewQuiz',
+                questions: [
+                    {
+                        question: 'Which day was on Jan, 1st, 2019?',
+                        answers: [
+                            {answer: 'Monday', isCorrect: false},
+                            {answer: 'Tuesday', isCorrect: true},
+                            {answer: 'Wednesday', isCorrect: false},
+                            {answer: 'Thursday', isCorrect: false},
+                            {answer: 'Friday', isCorrect: false},
+                            {answer: 'Saturday', isCorrect: false},
+                            {answer: 'Sunday', isCorrect: false}
+                        ]
+                    }
+                ]
+            }
+        });
+    });
+
+    test('should return true if there is a question', () => {
+        const result = resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+        expect(result).toBe(true);
+    });
+
+    test('should return false once all questions were launched', () => {
+        resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+        const result = resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+        expect(result).toBe(false);
+    });
+
+    test('should trigger NEXT_QUESTION', (done) => {
+        resolvers.Subscription.onNextQuestion.subscribe(undefined, {joinId: quiz.joinId}).next().then((payload: any) => {
+            expect(payload.value.onNextQuestion.question).toBe('Which day was on Jan, 1st, 2019?');
+            expect(payload.value.onNextQuestion.answers.length).toBe(7);
+            done();
+        });
+
+        resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+    });
+
+    test('should trigger QUESTION_TIMEOUT after 10 seconds', (done) => {
+        jest.useFakeTimers();
+
+        resolvers.Subscription.onQuestionTimeout.subscribe(undefined, {joinId: quiz.joinId}).next().then((payload: any) => {
+            expect(payload.value.onQuestionTimeout.answer).toBe('Tuesday');
+            done();
+        });
+
+        resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+        expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
+
+        jest.runAllTimers();
+    });
+});
 
 test('onPlayerJoined subscription should trigger when player joins after the operator has joined', (done) => {
     const quizId = resolvers.Mutation.createQuiz();
