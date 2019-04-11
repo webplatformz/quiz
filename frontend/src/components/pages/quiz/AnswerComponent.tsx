@@ -3,6 +3,7 @@ import {Answer} from '../../../../../server/domain/answer';
 
 interface AnswerComponentProps {
     answer: Answer;
+    isChosen: boolean;
     onClick: any;
 }
 
@@ -10,7 +11,7 @@ export const AnswerComponent = (props: AnswerComponentProps) => {
     return (<div style={
         {
             minWidth: '400px',
-            backgroundColor: 'white',
+            backgroundColor: props.isChosen ? 'lightseagreen' : 'white',
             padding: '40px',
             fontSize: 'large',
             margin: '20px',
