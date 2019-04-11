@@ -52,7 +52,7 @@ export default {
         },
         launchNextQuestion: (parent: any, {operatorId}: { operatorId: string }): Boolean => {
             const game = GameService.createOrGetGame(operatorId);
-            game.publishNextQuestion((nextQuestion: Question) => {
+            return game.publishNextQuestion((nextQuestion: Question) => {
                 pubsub.publish(Triggers.NextQuestion, {
                     onNextQuestion: nextQuestion,
                     questionJoinId: game.quiz.joinId
@@ -62,8 +62,12 @@ export default {
                     onQuestionTimeout: correctAnswer,
                     answerJoinId: game.quiz.joinId
                 });
+            }, (changedRanking: Ranking) => {
+                pubsub.publish(Triggers.RankingChanged, {
+                    onRankingChanged: changedRanking,
+                    rankingJoinId: game.quiz.joinId
+                });
             });
-            return !game.isFinished();
         },
         updateQuiz: (parent: any, {input}: { input: QuizInput }): Quiz => {
             const quiz = QuizRepository.find(input.id);

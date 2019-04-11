@@ -3,6 +3,7 @@ import {Game} from './game';
 import {QuizStart} from '../domain/quiz-start';
 import {Question} from "../domain/question";
 import {Answer} from "../domain/answer";
+import {Ranking} from "../domain/ranking";
 
 test('Join as player', () => {
     const quiz = QuizRepository.createQuiz();
@@ -61,8 +62,10 @@ test('publishNextQuestion should return correct question in callback', () => {
     });
     const correctAnswerCallback = jest.fn(() => {
     });
+    const rankingChangedCallback = jest.fn(() => {
+    });
 
-    game.publishNextQuestion(nextQuestionCallback, correctAnswerCallback);
+    game.publishNextQuestion(nextQuestionCallback, correctAnswerCallback, rankingChangedCallback);
 
     expect(nextQuestionCallback).toHaveBeenCalledTimes(1);
     expect(nextQuestionCallback).toBeCalledWith(question1);
@@ -75,4 +78,6 @@ test('publishNextQuestion should return correct question in callback', () => {
     expect(correctAnswerCallback).toHaveBeenCalledTimes(1);
     expect(correctAnswerCallback).toBeCalledWith(correctAnswer);
 
+    expect(rankingChangedCallback).toHaveBeenCalledTimes(1);
+    expect(rankingChangedCallback).toBeCalledWith(new Ranking([], true));
 });

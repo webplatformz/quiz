@@ -95,6 +95,22 @@ describe('launchNextQuestion', () => {
 
         jest.runAllTimers();
     });
+
+    test('should trigger RANKING_CHANGED after 10 seconds with correct state', (done) => {
+        jest.useFakeTimers();
+
+        resolvers.Subscription.onRankingChanged.subscribe(undefined, {joinId: quiz.joinId}).next().then((payload: any) => {
+            expect(payload.value.onRankingChanged.isFinalState).toBe(true);
+            done();
+        });
+
+        resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+
+        expect(setTimeout).toHaveBeenCalledTimes(1);
+        expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
+
+        jest.runAllTimers();
+    });
 });
 
 test('onPlayerJoined subscription should trigger when player joins after the operator has joined', (done) => {
