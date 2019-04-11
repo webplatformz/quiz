@@ -87,7 +87,9 @@ const dummyQuestion: Question = {
         answer: 'Das ist die Antwort 4',
         isCorrect: false
     }
-    ]
+    ],
+    getCorrectAnswer(): any {
+    }
 };
 
 class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState> {
