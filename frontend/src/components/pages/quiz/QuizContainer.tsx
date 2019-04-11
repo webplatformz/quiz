@@ -164,6 +164,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
+            console.log('next question received');
             this.setState({
                 ...this.state,
                 currentQuestion: response.data.onNextQuestion,
