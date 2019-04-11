@@ -28,7 +28,7 @@ export class Game {
     }
 
     getNextQuestion(): Question | undefined {
-        return this.state.questions[++this.state.currentQuestionIndex];
+        return this.quiz.questions[this.state.currentQuestionIndex++];
     }
 
     private notifyOnPlayerJoinedSubscribers() {

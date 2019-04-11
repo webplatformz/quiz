@@ -29,6 +29,37 @@ test('createQuiz returns an id', () => {
 });
 
 
+test('launchNextQuestion should return true if there is a question', () => {
+    const quizId = resolvers.Mutation.createQuiz();
+    const quiz = resolvers.Mutation.updateQuiz(undefined, {
+        input: {
+            id: quizId,
+            name: 'MyNewQuiz',
+            questions: [
+                {question: 'Which day was on Jan, 1st, 2019?', answers: []}
+            ]
+        }
+    });
+
+    const result = resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+    expect(result).toBe(true);
+});
+
+test('launchNextQuestion should return false if there is no further question', () => {
+    const quizId = resolvers.Mutation.createQuiz();
+    const quiz = resolvers.Mutation.updateQuiz(undefined, {
+        input: {
+            id: quizId,
+            name: 'MyNewQuiz',
+            questions: []
+        }
+    });
+
+    const result = resolvers.Mutation.launchNextQuestion(undefined, {operatorId: quiz.operatorId});
+    expect(result).toBe(false);
+});
+
+
 test('onPlayerJoined subscription should trigger when player joins after the operator has joined', (done) => {
     const quizId = resolvers.Mutation.createQuiz();
     const quiz = resolvers.Mutation.updateQuiz(undefined, {
