@@ -8,6 +8,7 @@ import {QuestionContainer} from './QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
 import {Answer} from '../../../../../server/domain/answer';
 import {Ranking} from '../../../../../server/domain/ranking';
+import {RankingContainer} from "./Ranking";
 
 interface QuizContainerState {
     joinId: string | undefined,
@@ -77,6 +78,7 @@ enum ActiveComponent {
     START_PAGE,
     WAITING_ROOM,
     QUESTION,
+    RANKING_LIST
 }
 
 
@@ -110,7 +112,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         joinId: undefined,
         operatorId: undefined,
         players: [],
-        activeComponent: ActiveComponent.START_PAGE,
+        activeComponent: ActiveComponent.RANKING_LIST,
         currentQuestion: dummyQuestion,
         correctAnswer: undefined,
         question: undefined,
@@ -229,6 +231,12 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 return (<QuestionContainer
                     question={this.state.currentQuestion}
                     correctAnswerId={correctAnswerId} />)
+            case ActiveComponent.RANKING_LIST:
+                /*if (!this.state.currentQuestion) {
+                    throw new Error('Invalid state. Question is not defined');
+                }
+                const correctAnswerId = this.state.correctAnswer ? this.state.correctAnswer.id : undefined;*/
+                return (<RankingContainer/>)
 
         }
     }

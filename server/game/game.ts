@@ -6,6 +6,7 @@ import {Quiz} from '../domain/quiz';
 import {Question} from "../domain/question";
 import {Answer} from "../domain/answer";
 import {QuizOperator} from "../domain/quiz-operator";
+import {Ranking} from "../domain/ranking";
 
 export class Game {
     private state: QuizState = new QuizState();
@@ -29,20 +30,32 @@ export class Game {
         this.onPlayerJoinedSubscribers.push(callback);
     }
 
-    publishNextQuestion(nextQuestionCallback: (nextQuestion: Question) => void, correctAnswerCallback: (correctAnswer: Answer) => void): void {
+    publishNextQuestion(nextQuestionCallback: (nextQuestion: Question) => void,
+                        correctAnswerCallback: (correctAnswer: Answer) => void,
+                        rankingCallback: (ranking: Ranking) => void): boolean {
         const currentQuestionIndex = this.state.currentQuestionIndex;
         const nextQuestion = this.quiz.questions[currentQuestionIndex];
-        this.state.currentQuestionIndex++;
-        if (nextQuestion) {
-            nextQuestionCallback(nextQuestion);
-            const correctAnswer = this.quiz.questions[currentQuestionIndex].getCorrectAnswer();
-            if (!correctAnswer) {
-                throw new Error(`Could not find correct answer for quiz ID ${this.quiz.id} and questionIndex ${currentQuestionIndex}.`);
-            }
-            setTimeout(() => {
-                correctAnswerCallback(correctAnswer);
-            }, 10000);
+
+        if (!nextQuestion) {
+            return false;
         }
+
+        const correctAnswer = this.quiz.questions[currentQuestionIndex].getCorrectAnswer();
+        if (!correctAnswer) {
+            throw new Error(`Could not find correct answer for quiz ID ${this.quiz.id} and questionIndex ${currentQuestionIndex}.`);
+        }
+
+        const isLastQuestion = currentQuestionIndex >= this.quiz.questions.length - 1;
+
+        nextQuestionCallback(nextQuestion);
+
+        setTimeout(() => {
+            correctAnswerCallback(correctAnswer);
+            rankingCallback(new Ranking(this.state.players, isLastQuestion));
+        }, 10000);
+
+        this.state.currentQuestionIndex++;
+        return true;
     }
 
     isFinished(): boolean {
