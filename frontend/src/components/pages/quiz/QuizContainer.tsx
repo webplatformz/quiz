@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Player} from '../../../../../server/domain/player';
 import {withApollo, WithApolloClient} from 'react-apollo';
 import {gql} from 'apollo-boost';
-import {WaitingRoom} from './WaitingRoom';
+import WaitingRoom from './WaitingRoom';
 import {StartPage} from './StartPage';
 import {QuestionContainer} from './QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
@@ -228,7 +228,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 const correctAnswerId = this.state.correctAnswer ? this.state.correctAnswer.id : undefined;
                 return (<QuestionContainer
                     question={this.state.currentQuestion}
-                    correctAnswerId={correctAnswerId}/>)
+                    correctAnswerId={correctAnswerId} />)
 
         }
     }

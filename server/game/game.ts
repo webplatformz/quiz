@@ -5,6 +5,7 @@ import {SimpleGuid} from '../util/simple-guid';
 import {Quiz} from '../domain/quiz';
 import {Question} from "../domain/question";
 import {Answer} from "../domain/answer";
+import {QuizOperator} from "../domain/quiz-operator";
 
 export class Game {
     private state: QuizState = new QuizState();
