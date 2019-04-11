@@ -19,7 +19,7 @@ xtest('basic', async () => {
 test('info', async () => {
     const result = await resolvers.Query.info();
 
-    expect(result).toBe('Hello from GraphQL 2');
+    expect(result).toContain('Hi from the Z-QUIZ server. It\'s');
 });
 
 test('createQuiz returns an id', () => {
