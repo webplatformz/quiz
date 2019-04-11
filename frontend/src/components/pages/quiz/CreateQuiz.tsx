@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Card, CardText, CardTitle, Textfield} from 'react-mdl';
+import {Button} from 'react-mdl';
 import {gql} from "apollo-boost";
 import {withApollo} from "react-apollo";
 
@@ -87,17 +87,17 @@ class CreateQuiz extends Component<any, any> {
 
     render() {
         return (
-            <Card shadow={0} style={{width: '300px', height: '400px', margin: 'auto'}}>
-                <CardTitle style={{textAlign: "center"}}>Create Quiz</CardTitle>
-                <CardText>
-                    <p>State: {this.state.quizState}</p>
-                    <p>QuizId: {this.state.quizId}</p>
-                    <p>Name: {this.state.quizName}</p>
-                    <p>OperatorId: {this.state.operatorId}</p>
-                    <p>JoinId: {this.state.joinId}</p>
-                    <Button raised ripple onClick={this.createDummyQuiz}>Create</Button>
-                </CardText>
-            </Card>
+            <div>
+                <h4 style={{marginTop: 0}}>Create Quiz</h4>
+                <p>
+                    State: {this.state.quizState} <br/>
+                    QuizId: {this.state.quizId} <br/>
+                    Name: {this.state.quizName} <br/>
+                    OperatorId: {this.state.operatorId} <br/>
+                    JoinId: {this.state.joinId} <br/>
+                </p>
+                <Button raised ripple colored style={{ marginTop: '8px', marginBottom: '10px'}} onClick={this.createDummyQuiz}>Create</Button>
+            </div>
         )
     }
 }

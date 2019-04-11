@@ -21,6 +21,19 @@ interface QuizContainerState {
     isFinalState: boolean
 }
 
+const JOIN_AS_OPERATOR_MUTATION = gql`
+    mutation joinAsOperator($operatorId: String!){
+        joinAsOperator(operatorId: $operatorId) {
+            joinId
+            operatorId 
+            players {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const PLAYER_JOIN_SUBSCRIPTION = gql`
     subscription onPlayerJoined($joinId: String!){
         onPlayerJoined(joinId: $joinId) {
@@ -108,7 +121,10 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     constructor(props: any) {
         super(props);
         this.joinQuiz = this.joinQuiz.bind(this);
-        this.state.operatorId = this.props.match.params.operatorId;
+        const operatorId = this.props.match.params.operatorId;
+        if(operatorId) {
+            this.joinQuizAsOperator(operatorId);
+        }
     }
 
     joinQuiz(joinId: string, players: Player[]) {
@@ -117,6 +133,19 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         this.subscribeToNextQuestion();
         this.subscribeToQuestionTimeout();
         this.subscribeToRankingChanged();
+    }
+
+    joinQuizAsOperator(operatorId: string): void {
+        this.props.client.mutate({
+            mutation: JOIN_AS_OPERATOR_MUTATION,
+                variables: {
+                    operatorId: operatorId
+                }
+            })
+            .then((response: any) => {
+                this.setState({...this.state, operatorId: response.data.joinAsOperator.operatorId});
+                this.joinQuiz(response.data.joinAsOperator.joinId, response.data.joinAsOperator.players);
+            });
     }
 
     subscribeToPlayerJoined(): void {
@@ -176,7 +205,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
 
     render() {
         return (
-            <div style={{width: '80%', margin: 'auto', paddingTop: '16px'}}>
+            <div style={{display: 'flex', maxWidth: '600px', margin: 'auto', padding: '16px'}}>
                 {this.renderComponent()}
             </div>
         );

@@ -18,6 +18,7 @@ const JOIN_MUTATION = gql`
         join(input: { joinId: $joinId, nickname: $nickname}) {
             joinId,
             players {
+                id
                 name
             }
         }
@@ -37,36 +38,30 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
 
     joinQuiz(): void {
         this.props.client.mutate({
-            mutation: JOIN_MUTATION,
-            variables: {
-                joinId: this.state.joinId,
-                nickname: this.state.nickname
-            }
-        })
+                mutation: JOIN_MUTATION,
+                variables: {
+                    joinId: this.state.joinId,
+                    nickname: this.state.nickname
+                }
+            })
             .then((response: any) => this.props.joinQuiz(response.data.join.joinId, response.data.join.players));
     }
 
     render() {
         return (
             <div>
-                <Card shadow={0} style={{width: '300px', height: '400px', margin: 'auto'}}>
-                    <CardTitle style={{textAlign: 'center'}}>Join Quiz</CardTitle>
-                    <CardText>
-                        <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                            this.setState({...this.state, joinId: event.currentTarget.value})
-                        }}
-                                   label="Quiz ID"
-                                   pattern="^[A-Za-z1-9]{0,6}$"/>
-                        <br/>
-                        <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                            this.setState({...this.state, nickname: event.currentTarget.value})
-                        }}
-                                   label="Nickname"/>
-                        <br/>
-                        <br/>
-                        <Button raised ripple onClick={this.joinQuiz}>Join</Button>
-                    </CardText>
-                </Card>
+                <h4 style={{marginTop: 0}}>Join Quiz</h4>
+                <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                                this.setState({...this.state, joinId: event.currentTarget.value})
+                            }}
+                           label="Quiz ID"
+                           pattern="^[A-Za-z1-9]{0,6}$"/>
+                <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                                this.setState({...this.state, nickname: event.currentTarget.value})
+                            }}
+                           label="Nickname"/>
+                <br/>
+                <Button raised ripple colored style={{margin: '10px'}} onClick={this.joinQuiz}>Join</Button>
             </div>
         );
     }

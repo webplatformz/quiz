@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Player} from '../../../../../server/domain/player';
-import PlayerList from './PlayerList';
-import {Cell, Grid} from 'react-mdl';
+import {Card, Cell, Grid} from 'react-mdl';
 import JoinQuiz from './JoinQuiz';
 import CreateQuiz from './CreateQuiz';
 
@@ -13,16 +12,16 @@ export class StartPage extends Component<StartPageProps, any> {
 
     render() {
         return (
-            <div>
+            <Card shadow={3} style={{flex: '1'}}>
                 <Grid>
-                    <Cell col={6}>
+                    <Cell col={6} >
                         <JoinQuiz joinQuiz={this.props.joinQuiz}/>
                     </Cell>
                     <Cell col={6}>
                         <CreateQuiz/>
                     </Cell>
                 </Grid>
-            </div>
+            </Card>
         );
     }
 }

@@ -48,6 +48,14 @@ export class Game {
         return !this.quiz.questions[this.state.currentQuestionIndex - 1];
     }
 
+    getQuizOperator(): QuizOperator {
+        const quizName = this.quiz.name;
+        if (!quizName) {
+            throw new Error(`Quiz name must be defined to retrieve an operator for quiz with id ${this.quiz.id}`);
+        }
+        return new QuizOperator(quizName, this.quiz.joinId, this.quiz.operatorId, this.state.players);
+    }
+
     private notifyOnPlayerJoinedSubscribers() {
         this.onPlayerJoinedSubscribers.forEach(subscriber => {
             if (!this.quiz.name) {
