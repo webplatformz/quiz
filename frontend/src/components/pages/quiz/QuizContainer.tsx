@@ -4,7 +4,7 @@ import {withApollo, WithApolloClient} from 'react-apollo';
 import {gql} from 'apollo-boost';
 import WaitingRoom from './WaitingRoom';
 import {StartPage} from './StartPage';
-import {QuestionContainer} from './QuestionContainer';
+import QuestionContainer from './QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
 import {Answer} from '../../../../../server/domain/answer';
 import {Ranking} from '../../../../../server/domain/ranking';
@@ -12,10 +12,10 @@ import {Ranking} from '../../../../../server/domain/ranking';
 interface QuizContainerState {
     joinId: string | undefined,
     operatorId: string | undefined,
+    playerId: string | undefined,
     activeComponent: ActiveComponent,
     currentQuestion: Question | undefined,
     players: Player[],
-    question: Question | undefined,
     correctAnswer: Answer | undefined,
     ranking: Ranking | undefined,
     isFinalState: boolean
@@ -48,7 +48,12 @@ const PLAYER_JOIN_SUBSCRIPTION = gql`
 const NEXT_QUESTION_SUBSCRIPTION = gql`
     subscription onNextQuestion($joinId: String!){
         onNextQuestion(joinId: $joinId) {
+            id
             question
+            answers {
+                id
+                answer
+            }
         }
     }
 `;
@@ -56,6 +61,7 @@ const NEXT_QUESTION_SUBSCRIPTION = gql`
 const QUESTION_TIMEOUT_SUBSCRIPTION = gql`
     subscription onQuestionTimeout($joinId: String!){
         onQuestionTimeout(joinId: $joinId) {
+            id
             answer
         }
     }
@@ -83,11 +89,11 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     state: QuizContainerState = {
         joinId: undefined,
         operatorId: undefined,
+        playerId: undefined,
         players: [],
         activeComponent: ActiveComponent.START_PAGE,
         currentQuestion: undefined,
         correctAnswer: undefined,
-        question: undefined,
         ranking: undefined,
         isFinalState: false
     };
@@ -101,25 +107,38 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         }
     }
 
-    joinQuiz(joinId: string, players: Player[]) {
-        this.setState({...this.state, joinId, players, activeComponent: ActiveComponent.WAITING_ROOM});
-        this.subscribeToPlayerJoined();
-        this.subscribeToNextQuestion();
-        this.subscribeToQuestionTimeout();
-        this.subscribeToRankingChanged();
+    joinQuiz(joinId: string, playerId: string, players: Player[]) {
+        this.setState({...this.state,
+            joinId,
+            playerId,
+            players,
+            activeComponent: ActiveComponent.WAITING_ROOM});
+        this.subscribeToQuizEvents();
     }
 
     joinQuizAsOperator(operatorId: string): void {
         this.props.client.mutate({
-            mutation: JOIN_AS_OPERATOR_MUTATION,
-            variables: {
-                operatorId: operatorId
-            }
-        })
+                mutation: JOIN_AS_OPERATOR_MUTATION,
+                variables: {
+                    operatorId: operatorId
+                }
+            })
             .then((response: any) => {
-                this.setState({...this.state, operatorId: response.data.joinAsOperator.operatorId});
-                this.joinQuiz(response.data.joinAsOperator.joinId, response.data.joinAsOperator.players);
+                this.setState({...this.state,
+                    joinId: response.data.joinAsOperator.joinId,
+                    operatorId: response.data.joinAsOperator.operatorId,
+                    players: response.data.joinAsOperator.players,
+                    activeComponent: ActiveComponent.WAITING_ROOM
+                });
+                this.subscribeToQuizEvents();
             });
+    }
+
+    subscribeToQuizEvents(): void {
+        this.subscribeToPlayerJoined();
+        this.subscribeToNextQuestion();
+        this.subscribeToQuestionTimeout();
+        this.subscribeToRankingChanged();
     }
 
     subscribeToPlayerJoined(): void {
@@ -145,8 +164,9 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         }).subscribe((response: any) => {
             this.setState({
                 ...this.state,
-                question: response.data.onNextQuestion.question,
-                activeComponent: ActiveComponent.QUESTION
+                currentQuestion: response.data.onNextQuestion,
+                activeComponent: ActiveComponent.QUESTION,
+                correctAnswer: undefined
             });
         })
     }
@@ -158,7 +178,8 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, correctAnswer: response.data.onQuestionTimeout.answer});
+            console.log('Q-Timeout:', response);
+            this.setState({...this.state, correctAnswer: response.data.onQuestionTimeout});
         })
     }
 
@@ -193,16 +214,23 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 );
             case ActiveComponent.WAITING_ROOM:
                 return (
-                    <WaitingRoom players={this.state.players} operatorId={this.state.operatorId}/>
+                    <WaitingRoom players={this.state.players}
+                                 operatorId={this.state.operatorId}
+                                 joinId={this.state.joinId}/>
                 );
             case ActiveComponent.QUESTION:
                 if (!this.state.currentQuestion) {
                     throw new Error('Invalid state. Question is not defined');
                 }
                 const correctAnswerId = this.state.correctAnswer ? this.state.correctAnswer.id : undefined;
-                return (<QuestionContainer
-                    question={this.state.currentQuestion}
-                    correctAnswerId={correctAnswerId}/>)
+                return (
+                    <QuestionContainer
+                        joinId={this.state.joinId}
+                        playerId={this.state.playerId}
+                        operatorId={this.state.operatorId}
+                        question={this.state.currentQuestion}
+                        correctAnswerId={correctAnswerId}/>
+                );
 
         }
     }

@@ -8,6 +8,7 @@ import {withApollo, WithApolloClient} from "react-apollo";
 interface WaitingRoomProps {
     players: Player[];
     operatorId: string | undefined;
+    joinId: string | undefined;
 }
 
 const LAUNCH_QUESTION_MUTATION = gql`
@@ -22,7 +23,6 @@ class WaitingRoom extends Component<WithApolloClient<WaitingRoomProps>, any> {
         super(props);
         this.startGame = this.startGame.bind(this);
     }
-
 
     startGame() {
         this.props.client.mutate({
@@ -47,9 +47,10 @@ class WaitingRoom extends Component<WithApolloClient<WaitingRoomProps>, any> {
         return (
             <Card shadow={3} style={{width: '500px', margin: 'auto', padding: '10px'}}>
                 <CardTitle style={{textAlign: "center"}}>
-                    <h4 style={{margin: 0}}>Players</h4> {startButton}
+                    <h4 style={{margin: 0}}>Quiz ID: {this.props.joinId}</h4> {startButton}
                 </CardTitle>
                 <CardText style={{paddingTop: 0, paddingBottom: 0}}>
+                    <h5 style={{textAlign: 'left'}}>Players</h5>
                     <PlayerList players={this.props.players}/>
                     <div style={{marginBottom: '16px'}}>
                         <Spinner style={{margin: "auto",}}/>

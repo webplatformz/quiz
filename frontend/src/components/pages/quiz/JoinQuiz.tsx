@@ -10,13 +10,14 @@ interface JoinQuizState {
 }
 
 interface JoinQuizProps {
-    joinQuiz: (joinId: string, players: Player[]) => void
+    joinQuiz: (joinId: string, playerId: string, players: Player[]) => void
 }
 
 const JOIN_MUTATION = gql`
     mutation join($joinId: String!, $nickname: String!){
         join(input: { joinId: $joinId, nickname: $nickname}) {
             joinId,
+            playerId,
             players {
                 id
                 name
@@ -44,7 +45,11 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
                     nickname: this.state.nickname
                 }
             })
-            .then((response: any) => this.props.joinQuiz(response.data.join.joinId, response.data.join.players));
+            .then((response: any) => this.props.joinQuiz(
+                response.data.join.joinId,
+                response.data.join.playerId,
+                response.data.join.players)
+            );
     }
 
     render() {

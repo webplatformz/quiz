@@ -5,7 +5,7 @@ import JoinQuiz from './JoinQuiz';
 import CreateQuiz from './CreateQuiz';
 
 interface StartPageProps {
-    joinQuiz: (joinId: string, players: Player[]) => void
+    joinQuiz: (joinId: string, playerId: string, players: Player[]) => void
 }
 
 export class StartPage extends Component<StartPageProps, any> {

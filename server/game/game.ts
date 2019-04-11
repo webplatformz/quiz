@@ -22,8 +22,8 @@ export class Game {
         if (!this.quiz.name) {
             throw new Error(`The quiz with ID ${this.quiz.id} is not ready to join - it misses a name.`);
         }
-        this.notifyOnPlayerJoinedSubscribers();
-        return new QuizStart(this.quiz.name, joinId, this.state.players);
+        this.notifyOnPlayerJoinedSubscribers(player.id);
+        return new QuizStart(this.quiz.name, joinId, player.id, this.state.players);
     }
 
     registerOnPlayerJoined(callback: (quizStart: QuizStart) => void): void {
@@ -54,6 +54,7 @@ export class Game {
             correctAnswerCallback(correctAnswer);
             rankingCallback(new Ranking(this.state.players, isLastQuestion));
             this.state.questionStartTimestamp = -1;
+            console.log("Sent Q-Timout", correctAnswer);
         }, 10000);
 
         this.state.questionStartTimestamp = new Date().getTime();
@@ -85,12 +86,12 @@ export class Game {
         }
     }
 
-    private notifyOnPlayerJoinedSubscribers() {
+    private notifyOnPlayerJoinedSubscribers(playerId: string) {
         this.onPlayerJoinedSubscribers.forEach(subscriber => {
             if (!this.quiz.name) {
                 throw new Error(`The quiz with ID ${this.quiz.id} is not ready yet - it misses a name.`);
             }
-            subscriber(new QuizStart(this.quiz.name, this.quiz.joinId, this.state.players));
+            subscriber(new QuizStart(this.quiz.name, this.quiz.joinId, playerId, this.state.players));
         });
     }
 }
