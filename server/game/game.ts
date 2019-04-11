@@ -58,10 +58,6 @@ export class Game {
         return true;
     }
 
-    isFinished(): boolean {
-        return !this.quiz.questions[this.state.currentQuestionIndex - 1];
-    }
-
     getQuizOperator(): QuizOperator {
         const quizName = this.quiz.name;
         if (!quizName) {
