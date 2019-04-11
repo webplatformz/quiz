@@ -1,6 +1,4 @@
 import React, {Component} from 'react'
-import JoinQuiz from './JoinQuiz';
-import CreateQuiz from './CreateQuiz';
 import {Player} from '../../../../../server/domain/player';
 import {withApollo, WithApolloClient} from 'react-apollo';
 import {gql} from 'apollo-boost';
@@ -8,8 +6,8 @@ import {WaitingRoom} from './WaitingRoom';
 import {StartPage} from './StartPage';
 import {QuestionContainer} from './QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
-import {Answer} from "../../../../../server/domain/answer";
-import {Ranking} from "../../../../../server/domain/ranking";
+import {Answer} from '../../../../../server/domain/answer';
+import {Ranking} from '../../../../../server/domain/ranking';
 
 interface QuizContainerState {
     joinId: string | undefined,
@@ -97,8 +95,8 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         joinId: undefined,
         operatorId: undefined,
         players: [],
-        activeComponent: ActiveComponent.QUESTION,
-        currentQuestion: dummyQuestion
+        activeComponent: ActiveComponent.START_PAGE,
+        currentQuestion: dummyQuestion,
         answer: undefined,
         question: undefined,
         ranking: undefined,
