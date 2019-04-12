@@ -1,12 +1,12 @@
 import resolvers from './resolvers';
 import MongoClient from './persistence/MongoClient';
 import {isMongoDbEnabled} from './persistence';
-import express = require('express');
-import path = require('path');
 import {ApolloServer} from 'apollo-server-express';
 import {gql} from 'apollo-server';
 import * as fs from 'fs';
 import http from 'http';
+import express = require('express');
+import path = require('path');
 
 
 // Connect to MongoDB
@@ -27,6 +27,11 @@ const app = express();
 app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
 app.get('/operator/*', (req, res) => {
+    const pathToIndexFile = path.join(__dirname, '../../frontend/build/index.html');
+    res.sendFile(pathToIndexFile);
+});
+
+app.get('/admin/*', (req, res) => {
     const pathToIndexFile = path.join(__dirname, '../../frontend/build/index.html');
     res.sendFile(pathToIndexFile);
 });
