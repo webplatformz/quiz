@@ -48,7 +48,7 @@ class WaitingRoom extends Component<WithApolloClient<WaitingRoomProps>, any> {
             );
 
             const joinUrl = PathUtils.joinUrlWithJoinId(this.props.joinId);
-            qrCode = <QRCode size={160} value={joinUrl} />;
+            qrCode = <QRCode size={350} value={joinUrl} />;
         }
 
         return (
