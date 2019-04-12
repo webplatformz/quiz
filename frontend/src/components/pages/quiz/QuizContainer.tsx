@@ -262,7 +262,8 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
             const randomIndex = Math.floor(Math.random() * answerCopy.length);
             shuffledAnswers.push(answerCopy.splice(randomIndex, 1)[0]);
         }
-        return new Question(question.id, question.question, shuffledAnswers);
+        question.answers = shuffledAnswers;
+        return question;
     }
 }
 
