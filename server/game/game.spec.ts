@@ -86,7 +86,7 @@ test('publishNextQuestion should return correct question in callback', () => {
     jest.runAllTimers();
 
     expect(correctAnswerCallback).toHaveBeenCalledTimes(1);
-    expect(correctAnswerCallback).toBeCalledWith(question.getCorrectAnswer());
+    expect(correctAnswerCallback).toBeCalledWith(question.getCorrectAnswers());
 
     expect(rankingChangedCallback).toHaveBeenCalledTimes(1);
     expect(rankingChangedCallback).toBeCalledWith(new Ranking([], true));

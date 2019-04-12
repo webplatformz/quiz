@@ -45,9 +45,9 @@ export default {
                     onNextQuestion: nextQuestion,
                     questionJoinId: game.quiz.joinId
                 });
-            }, (correctAnswer: Answer) => {
+            }, (correctAnswers: Answer[]) => {
                 pubsub.publish(Triggers.QuestionTimeout, {
-                    onQuestionTimeout: correctAnswer,
+                    onQuestionTimeout: correctAnswers,
                     answerJoinId: game.quiz.joinId
                 });
             }, (changedRanking: Ranking) => {

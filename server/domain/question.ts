@@ -14,11 +14,11 @@ export class Question {
         }
     }
 
-    getCorrectAnswer(): Answer {
-        const correctAnswer = this.answers.find(answer => answer.isCorrect);
-        if(!correctAnswer) {
+    getCorrectAnswers(): Answer[] {
+        const correctAnswers = this.answers.filter(answer => answer.isCorrect);
+        if(correctAnswers.length === 0) {
             throw new Error('At least 1 answer must be correct');
         }
-        return correctAnswer;
+        return correctAnswers;
     }
 }
