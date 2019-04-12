@@ -86,13 +86,18 @@ class AdminContainer extends Component<any, any> {
     }
 
     handleQuestionChange(questionIndex: number, target: any) {
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const value = target.value;
 
         let questions = [...this.state.questions];
-        questions[questionIndex] = {
-            question: value,
-            answers: []
-        };
+        if (!value) {
+            questions.splice(questionIndex, 1);
+        } else {
+            questions[questionIndex] = {
+                question: value,
+                answers: (questions[questionIndex] || {}).answers || []
+            };
+        }
+
         target.value = '';
 
         this.setState({
@@ -102,18 +107,25 @@ class AdminContainer extends Component<any, any> {
     }
 
     handleAnswerChange(questionIndex: number, answerIndex: number, target: any) {
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const value = target.value;
 
         let questions = [...this.state.questions];
         let answers = [...questions[questionIndex].answers];
-        answers[answerIndex] = {
-            answer: value,
-            isCorrect: answerIndex === 0
-        };
+
+        if (!value) {
+            answers.splice(answerIndex, 1);
+        } else {
+            answers[answerIndex] = {
+                answer: value,
+                isCorrect: answerIndex === 0
+            };
+        }
+
         questions[questionIndex] = {
             question: questions[questionIndex].question,
             answers: answers
         };
+
         target.value = '';
 
         this.setState({
@@ -123,7 +135,7 @@ class AdminContainer extends Component<any, any> {
     }
 
     render() {
-        let content = <div></div>;
+        let content = <div/>;
         if (this.state.quizReadyToJoin) {
             content = <div>
                 <p>
@@ -149,14 +161,16 @@ class AdminContainer extends Component<any, any> {
                                     <Textfield
                                         onChange={e => this.handleQuestionChange(questionIndex, e.target)}
                                         value={question.question}
-                                        label={`Question ${questionIndex + 1}`}/>
+                                        label={`Question ${questionIndex + 1}`}
+                                        floatingLabel/>
                                     {
                                         question.answers.map((answer, answerIndex) => {
                                             return <div key={10 * questionIndex + answerIndex}>
                                                 <Textfield
                                                     onChange={e => this.handleAnswerChange(questionIndex, answerIndex, e.target)}
                                                     value={answer.answer}
-                                                    label={`Answer ${answerIndex + 1}`}/>
+                                                    label={`Question ${questionIndex + 1} - Answer ${answerIndex + 1}`}
+                                                    floatingLabel/>
                                             </div>
                                         })
                                     }
@@ -164,7 +178,8 @@ class AdminContainer extends Component<any, any> {
                                         <Textfield
                                             key="next"
                                             onChange={e => this.handleAnswerChange(questionIndex, question.answers.length, e.target)}
-                                            label={`Answer ${question.answers.length + 1}`}/>
+                                            label={`Question ${questionIndex + 1} - Answer ${question.answers.length + 1}`}
+                                            floatingLabel/>
                                     </div>
                                 </div>
                             })
@@ -172,7 +187,8 @@ class AdminContainer extends Component<any, any> {
                         <div key={this.state.questions.length}>
                             <Textfield
                                 onChange={e => this.handleQuestionChange(this.state.questions.length, e.target)}
-                                label={`Question ${this.state.questions.length + 1}`}/>
+                                label={`Question ${this.state.questions.length + 1}`}
+                                floatingLabel/>
                         </div>
                     </div>
                     <Button raised ripple colored style={{marginTop: '8px', marginBottom: '10px'}}
@@ -199,7 +215,7 @@ class AdminContainer extends Component<any, any> {
 
     private getShuffledAnswers(answers: AnswerInput[]): AnswerInput[] {
         const answerCopy = [...answers];
-        let shuffledAnswers = [];
+        let shuffledAnswers: AnswerInput[] = [];
         while (answerCopy.length > 0) {
             const randomIndex = Math.round(Math.random() * (answerCopy.length - 1));
             shuffledAnswers.push(answerCopy.splice(randomIndex, 1)[0]);
