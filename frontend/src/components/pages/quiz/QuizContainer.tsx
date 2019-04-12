@@ -8,6 +8,7 @@ import QuestionContainer from './QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
 import {Answer} from '../../../../../server/domain/answer';
 import {Ranking} from '../../../../../server/domain/ranking';
+import {withToastManager} from 'react-toast-notifications';
 
 interface QuizContainerState {
     joinId: string | undefined,
@@ -134,7 +135,8 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 activeComponent: ActiveComponent.WAITING_ROOM
             });
             this.subscribeToQuizEvents();
-        });
+        })
+        .catch(() => this.showErrorToast("There was no quiz found with this operator ID"));;
     }
 
     subscribeToQuizEvents(): void {
@@ -236,6 +238,13 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 );
         }
     }
+
+    private showErrorToast(message: string) {
+        this.props.toastManager.add(message, {
+            appearance: 'error',
+            autoDismiss: true,
+        })
+    }
 }
 
-export default withApollo(QuizContainer);
+export default withToastManager(withApollo(QuizContainer));

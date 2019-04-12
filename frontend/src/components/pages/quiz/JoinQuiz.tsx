@@ -61,13 +61,6 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
             });
     }
 
-    showErrorToast(message: string) {
-        this.props.toastManager.add(message, {
-            appearance: 'error',
-            autoDismiss: true,
-        })
-    }
-
     render() {
         return (
             <div>
@@ -89,6 +82,14 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
             </div>
         );
     }
+
+    private showErrorToast(message: string) {
+        this.props.toastManager.add(message, {
+            appearance: 'error',
+            autoDismiss: true,
+        })
+    }
+
 }
 
 export default withToastManager(withApollo(JoinQuiz));
