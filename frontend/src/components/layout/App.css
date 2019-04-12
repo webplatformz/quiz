@@ -23,6 +23,11 @@
   color: #61dafb;
 }
 
+/* Necessary to bring toast messages to the front*/
+.css-1p3cd4g {
+  z-index: 2;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
