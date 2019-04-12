@@ -36,6 +36,11 @@ app.get('/admin/*', (req, res) => {
     res.sendFile(pathToIndexFile);
 });
 
+app.get('/*', (req, res) => {
+    const pathToIndexFile = path.join(__dirname, '../../frontend/build/index.html');
+    res.sendFile(pathToIndexFile);
+});
+
 const server = new ApolloServer({
     typeDefs,
     resolvers,
