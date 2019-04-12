@@ -1,14 +1,14 @@
 import React from 'react'
 import {Route, Switch} from "react-router";
-import PlayerList from "../pages/quiz/PlayerList";
 import QuizContainer from "../pages/quiz/QuizContainer";
+import AdminContainer from "../pages/quiz/AdminContainer";
 
 const Main = () => (
     <main>
         <Switch>
             <Route exact path='/' component={QuizContainer}/>
             <Route path='/operator/:operatorId' component={QuizContainer}/>
-            <Route path='/createquiz/:quizId' component={PlayerList}/>
+            <Route path='/admin/:quizId' component={AdminContainer}/>
         </Switch>
     </main>
 );

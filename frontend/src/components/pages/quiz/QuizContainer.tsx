@@ -109,30 +109,32 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     }
 
     joinQuiz(joinId: string, playerId: string, players: Player[]) {
-        this.setState({...this.state,
+        this.setState({
+            ...this.state,
             joinId,
             playerId,
             players,
-            activeComponent: ActiveComponent.WAITING_ROOM});
+            activeComponent: ActiveComponent.WAITING_ROOM
+        });
         this.subscribeToQuizEvents();
     }
 
     joinQuizAsOperator(operatorId: string): void {
         this.props.client.mutate({
-                mutation: JOIN_AS_OPERATOR_MUTATION,
-                variables: {
-                    operatorId: operatorId
-                }
-            })
-            .then((response: any) => {
-                this.setState({...this.state,
-                    joinId: response.data.joinAsOperator.joinId,
-                    operatorId: response.data.joinAsOperator.operatorId,
-                    players: response.data.joinAsOperator.players,
-                    activeComponent: ActiveComponent.WAITING_ROOM
-                });
-                this.subscribeToQuizEvents();
+            mutation: JOIN_AS_OPERATOR_MUTATION,
+            variables: {
+                operatorId: operatorId
+            }
+        }).then((response: any) => {
+            this.setState({
+                ...this.state,
+                joinId: response.data.joinAsOperator.joinId,
+                operatorId: response.data.joinAsOperator.operatorId,
+                players: response.data.joinAsOperator.players,
+                activeComponent: ActiveComponent.WAITING_ROOM
             });
+            this.subscribeToQuizEvents();
+        });
     }
 
     subscribeToQuizEvents(): void {
