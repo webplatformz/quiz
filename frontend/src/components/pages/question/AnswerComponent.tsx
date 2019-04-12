@@ -6,7 +6,8 @@ interface AnswerComponentProps {
     answer: Answer;
     onClick: any;
     correctAnswerIds: string[],
-    isSelected: boolean
+    isSelected: boolean,
+    isDisabled: boolean,
 }
 
 export class AnswerComponent extends Component<AnswerComponentProps, any> {
@@ -24,7 +25,8 @@ export class AnswerComponent extends Component<AnswerComponentProps, any> {
                 width: '100%',
                 cursor: 'pointer'
             }}
-                    onClick={this.props.onClick}>
+                    onClick={this.props.onClick}
+                    disabled={this.props.isDisabled && !this.props.isSelected}>
                 {this.props.answer.answer}
             </Button>
         );
