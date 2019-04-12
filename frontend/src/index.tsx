@@ -14,6 +14,7 @@ import 'react-mdl/extra/material.js';
 import {WebSocketLink} from "apollo-link-ws";
 import {getMainDefinition} from 'apollo-utilities';
 import {WebsocketUtils} from "./components/pages/WebsocketUtils";
+import {ToastProvider} from 'react-toast-notifications';
 
 const httpLink: ApolloLink = createHttpLink({
     uri: '/graphql'
@@ -27,8 +28,8 @@ const webSocketLink = new WebSocketLink({
 });
 
 const link = split(
-    ({ query }) => {
-        const { kind, operation } = getMainDefinition(query);
+    ({query}) => {
+        const {kind, operation} = getMainDefinition(query);
         return kind === 'OperationDefinition' && operation === 'subscription'
     },
     webSocketLink,
@@ -43,9 +44,11 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 
 ReactDOM.render(
     <ApolloProvider client={client}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
+        <ToastProvider>
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
+        </ToastProvider>
     </ApolloProvider>,
     document.getElementById('root')
 );

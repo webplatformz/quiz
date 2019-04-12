@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
 import {gql} from 'apollo-boost';
 import {withApollo, WithApolloClient} from 'react-apollo';
-import {Button, Textfield, Card, CardTitle, CardText} from 'react-mdl';
+import {Button, Textfield} from 'react-mdl';
 import {Player} from '../../../../../server/domain/player';
+import {withToastManager} from 'react-toast-notifications';
 
 interface JoinQuizState {
     joinId: string,
@@ -11,6 +12,7 @@ interface JoinQuizState {
 
 interface JoinQuizProps {
     joinQuiz: (joinId: string, playerId: string, players: Player[]) => void
+    toastManager: any
 }
 
 const JOIN_MUTATION = gql`
@@ -53,7 +55,10 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
                 response.data.join.joinId,
                 response.data.join.playerId,
                 response.data.join.players)
-            );
+            )
+            .catch(() => {
+                this.showErrorToast("No quiz with this ID found. Please check if your ID is correct.")
+            });
     }
 
     render() {
@@ -64,13 +69,11 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
                     this.setState({...this.state, joinId: event.currentTarget.value.trim()})
                 }}
                            label="Quiz ID"
-                           required={true}
-                           error="ID must be provided"
+                           error="ID is too long"
                            pattern="^[A-Za-z1-9]{0,6}$"/>
                 <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
                     this.setState({...this.state, nickname: event.currentTarget.value.trim()})
                 }}
-                           required={true}
                            label="Nickname"/>
                 <br/>
                 <Button raised ripple colored style={{margin: '10px'}}
@@ -79,6 +82,14 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
             </div>
         );
     }
+
+    private showErrorToast(message: string) {
+        this.props.toastManager.add(message, {
+            appearance: 'error',
+            autoDismiss: true,
+        })
+    }
+
 }
 
-export default withApollo(JoinQuiz);
+export default withToastManager(withApollo(JoinQuiz));

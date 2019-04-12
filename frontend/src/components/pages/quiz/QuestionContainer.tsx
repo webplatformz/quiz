@@ -7,6 +7,7 @@ import {gql} from 'apollo-boost';
 import {withApollo, WithApolloClient} from 'react-apollo';
 import {Ranking} from "../../../../../server/domain/ranking";
 import {RankingContainer} from "./Ranking";
+import {withToastManager} from 'react-toast-notifications';
 
 interface QuestionContainerProps {
     joinId: string | undefined;
@@ -15,6 +16,7 @@ interface QuestionContainerProps {
     question: Question;
     ranking: Ranking | undefined;
     correctAnswerId: string | undefined;
+    toastManager: any
 }
 
 interface QuestionContainerState {
@@ -111,24 +113,34 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         if (!this.state.chosenAnswerId) {
             this.setState({...this.state, chosenAnswerId: answerId});
             this.props.client.mutate({
-                mutation: ANSWER_QUESTION_MUTATION,
-                variables: {
-                    joinId: this.props.joinId,
-                    playerId: this.props.playerId,
-                    answerId: answerId
-                }
-            })
+                    mutation: ANSWER_QUESTION_MUTATION,
+                    variables: {
+                        joinId: this.props.joinId,
+                        playerId: this.props.playerId,
+                        answerId: answerId
+                    }
+                })
+                .catch(() => this.showErrorToast("Sending your answer failed, please try again."));
         }
     }
 
     private launchNextQuestion() {
         this.props.client.mutate({
-            mutation: LAUNCH_QUESTION_MUTATION,
-            variables: {
-                operatorId: this.props.operatorId
-            }
-        });
+                mutation: LAUNCH_QUESTION_MUTATION,
+                variables: {
+                    operatorId: this.props.operatorId
+                }
+            })
+            .catch(() => this.showErrorToast("Launching next question failed, please try again."));
     }
+
+    private showErrorToast(message: string) {
+        this.props.toastManager.add(message, {
+            appearance: 'error',
+            autoDismiss: true,
+        })
+    }
+
 }
 
-export default withApollo(QuestionContainer);
+export default withToastManager(withApollo(QuestionContainer));
