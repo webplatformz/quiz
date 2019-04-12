@@ -166,7 +166,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         }).subscribe((response: any) => {
             this.setState({
                 ...this.state,
-                currentQuestion: response.data.onNextQuestion,
+                currentQuestion: this.shuffleAnswers(response.data.onNextQuestion),
                 activeComponent: ActiveComponent.QUESTION,
                 correctAnswers: [],
                 ranking: undefined
@@ -243,7 +243,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         }
 
         const joinId = this.props.match.params.joinId;
-        if(joinId) {
+        if (joinId) {
             this.state.joinId = joinId;
         }
     }
@@ -253,6 +253,16 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
             appearance: 'error',
             autoDismiss: true
         })
+    }
+
+    private shuffleAnswers(question: Question): Question {
+        const answerCopy = [...question.answers];
+        let shuffledAnswers: Answer[] = [];
+        while (answerCopy.length > 0) {
+            const randomIndex = Math.floor(Math.random() * answerCopy.length);
+            shuffledAnswers.push(answerCopy.splice(randomIndex, 1)[0]);
+        }
+        return new Question(question.id, question.question, shuffledAnswers);
     }
 }
 

@@ -8,7 +8,6 @@ import {withApollo, WithApolloClient} from 'react-apollo';
 import {Ranking} from "../../../../../server/domain/ranking";
 import {RankingContainer} from "../quiz/Ranking";
 import {withToastManager} from 'react-toast-notifications';
-import {Answer} from "../../../../../server/domain/answer";
 
 interface QuestionContainerProps {
     joinId: string | undefined;
@@ -77,7 +76,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
             return (
                 <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
                     {
-                        this.shuffle(this.props.question.answers)
+                        this.props.question.answers
                             .map(answer => <AnswerComponent key={answer.id}
                                                             answer={answer}
                                                             correctAnswerIds={this.props.correctAnswerIds}
@@ -142,15 +141,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         })
     }
 
-    private shuffle(answers: Answer[]): Answer[] {
-        const answerCopy = [...answers];
-        let shuffledAnswers: Answer[] = [];
-        while (answerCopy.length > 0) {
-            const randomIndex = Math.floor(Math.random() * answerCopy.length);
-            shuffledAnswers.push(answerCopy.splice(randomIndex, 1)[0]);
-        }
-        return shuffledAnswers;
-    }
+
 }
 
 export default withToastManager(withApollo(QuestionContainer));
