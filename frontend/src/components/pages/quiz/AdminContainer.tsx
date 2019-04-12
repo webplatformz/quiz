@@ -169,6 +169,8 @@ class AdminContainer extends Component<any, any> {
             answers: answers
         };
 
+        target.value = '';
+
         this.setState({
             ...this.state,
             questions: questions
