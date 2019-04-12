@@ -39,10 +39,16 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
         super(props);
         this.joinQuiz = this.joinQuiz.bind(this);
 
-        if(this.props.joinId) {
+        if (this.props.joinId) {
             this.state.joinId = this.props.joinId;
         }
     }
+
+    _handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !this.isJoinDisabled()) {
+            this.joinQuiz();
+        }
+    };
 
     isJoinDisabled(): boolean {
         return this.state.joinId.trim().length === 0 || this.state.nickname.trim().length === 0;
@@ -62,13 +68,13 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
                 response.data.join.players)
             )
             .catch(() => {
-                this.showErrorToast("No quiz with this ID found. Please check if your ID is correct.")
+                this.showErrorToast('No quiz with this ID found. Please check if your ID is correct.')
             });
     }
 
     render() {
         return (
-            <div>
+            <div onKeyDown={this._handleKeyDown}>
                 <h4 style={{marginTop: 0}}>Join Quiz</h4>
                 <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
                     this.setState({...this.state, joinId: event.currentTarget.value.trim()})
@@ -92,7 +98,7 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
     private showErrorToast(message: string) {
         this.props.toastManager.add(message, {
             appearance: 'error',
-            autoDismiss: true,
+            autoDismiss: true
         })
     }
 
