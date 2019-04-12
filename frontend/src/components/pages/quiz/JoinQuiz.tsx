@@ -37,14 +37,18 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
         this.joinQuiz = this.joinQuiz.bind(this);
     }
 
+    isJoinDisabled(): boolean {
+        return this.state.joinId.trim().length === 0 || this.state.nickname.trim().length === 0;
+    }
+
     joinQuiz(): void {
         this.props.client.mutate({
-                mutation: JOIN_MUTATION,
-                variables: {
-                    joinId: this.state.joinId,
-                    nickname: this.state.nickname
-                }
-            })
+            mutation: JOIN_MUTATION,
+            variables: {
+                joinId: this.state.joinId,
+                nickname: this.state.nickname
+            }
+        })
             .then((response: any) => this.props.joinQuiz(
                 response.data.join.joinId,
                 response.data.join.playerId,
@@ -57,16 +61,21 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
             <div>
                 <h4 style={{marginTop: 0}}>Join Quiz</h4>
                 <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                                this.setState({...this.state, joinId: event.currentTarget.value})
-                            }}
+                    this.setState({...this.state, joinId: event.currentTarget.value.trim()})
+                }}
                            label="Quiz ID"
+                           required={true}
+                           error="ID must be provided"
                            pattern="^[A-Za-z1-9]{0,6}$"/>
                 <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                                this.setState({...this.state, nickname: event.currentTarget.value})
-                            }}
+                    this.setState({...this.state, nickname: event.currentTarget.value.trim()})
+                }}
+                           required={true}
                            label="Nickname"/>
                 <br/>
-                <Button raised ripple colored style={{margin: '10px'}} onClick={this.joinQuiz}>Join</Button>
+                <Button raised ripple colored style={{margin: '10px'}}
+                        disabled={this.isJoinDisabled()}
+                        onClick={this.joinQuiz}>Join</Button>
             </div>
         );
     }
