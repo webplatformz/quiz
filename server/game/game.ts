@@ -31,7 +31,7 @@ export class Game {
     }
 
     publishNextQuestion(nextQuestionCallback: (nextQuestion: Question) => void,
-                        correctAnswerCallback: (correctAnswer: Answer) => void,
+                        correctAnswerCallback: (correctAnswers: Answer[]) => void,
                         rankingCallback: (ranking: Ranking) => void): boolean {
         this.state.currentQuestionIndex++;
         const currentQuestionIndex = this.state.currentQuestionIndex;
@@ -41,17 +41,13 @@ export class Game {
             return false;
         }
 
-        const correctAnswer = this.quiz.questions[currentQuestionIndex].getCorrectAnswer();
-        if (!correctAnswer) {
-            throw new Error(`Could not find correct answer for quiz ID ${this.quiz.id} and questionIndex ${currentQuestionIndex}.`);
-        }
-
+        const correctAnswers = this.quiz.questions[currentQuestionIndex].getCorrectAnswers();
         const isLastQuestion = currentQuestionIndex >= this.quiz.questions.length - 1;
 
         nextQuestionCallback(nextQuestion);
 
         setTimeout(() => {
-            correctAnswerCallback(correctAnswer);
+            correctAnswerCallback(correctAnswers);
             rankingCallback(new Ranking(this.state.players, isLastQuestion));
             this.state.questionStartTimestamp = -1;
         }, 10000);
@@ -76,13 +72,17 @@ export class Game {
     answerQuestion(playerId: string, answerId: string): void {
         const currentTimestamp = new Date().getTime();
         const currentQuestion = this.getCurrentQuestion();
-        const correctAnswer = currentQuestion.getCorrectAnswer();
+        const correctAnswers = currentQuestion.getCorrectAnswers();
 
         const player: Player | undefined = this.state.getPlayerById(playerId);
-        if (answerId === correctAnswer.id && player) {
+        if (this.isCorrectAnswer(correctAnswers, answerId) && player) {
             const bonus = this.state.calculateBonus(currentTimestamp);
             player.score += 10 + bonus;
         }
+    }
+
+    private isCorrectAnswer(correctAnswers: Answer[], answerId: string) {
+        return correctAnswers.some(correctAnswer => correctAnswer.id === answerId);
     }
 
     private notifyOnPlayerJoinedSubscribers(playerId: string) {

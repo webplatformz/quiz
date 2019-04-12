@@ -15,7 +15,7 @@ interface QuestionContainerProps {
     operatorId: string | undefined;
     question: Question;
     ranking: Ranking | undefined;
-    correctAnswerId: string | undefined;
+    correctAnswerIds: string[];
     toastManager: any
 }
 
@@ -48,7 +48,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
     }
 
     componentDidUpdate(prevProps:any) : void {
-        if (prevProps.correctAnswerId && this.props.correctAnswerId === undefined) {
+        if (prevProps.correctAnswerIds.length !== 0 && this.props.correctAnswerIds.length === 0) {
             this.state.chosenAnswerId = undefined;
         }
     }
@@ -79,7 +79,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
                         this.props.question.answers
                             .map(answer => <AnswerComponent key={answer.id}
                                                             answer={answer}
-                                                            correctAnswerId={this.props.correctAnswerId}
+                                                            correctAnswerIds={this.props.correctAnswerIds}
                                                             isSelected={answer.id === this.state.chosenAnswerId}
                                                             onClick={this.answerQuestion.bind(this, answer.id)}/>)
                     }
@@ -90,7 +90,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
 
     private renderLaunchButton() {
         if(this.props.operatorId
-            && this.props.correctAnswerId
+            && this.props.correctAnswerIds.length !== 0
             && this.props.ranking
             && !this.props.ranking.isFinalState) {
             return (

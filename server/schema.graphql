@@ -17,7 +17,7 @@ type Subscription {
     onPlayerJoined(joinId: String!) : QuizStart!
     onNextQuestion(joinId: String!): Question!
     # Returns the correct answer
-    onQuestionTimeout(joinId: String!): Answer!
+    onQuestionTimeout(joinId: String!): [Answer!]!
     onRankingChanged(joinId: String!): Ranking!
 }
 

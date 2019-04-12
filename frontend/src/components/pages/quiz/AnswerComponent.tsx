@@ -5,7 +5,7 @@ import {Button} from 'react-mdl';
 interface AnswerComponentProps {
     answer: Answer;
     onClick: any;
-    correctAnswerId: string | undefined,
+    correctAnswerIds: string[],
     isSelected: boolean
 }
 
@@ -32,7 +32,7 @@ export class AnswerComponent extends Component<AnswerComponentProps, any> {
 
     private getBorder(): string {
         if (this.props.isSelected) {
-            if(!this.props.correctAnswerId || this.isCorrectAnswer()) {
+            if (this.props.correctAnswerIds.length === 0 || this.isCorrectAnswer()) {
                 return '3px solid #3ea026';
             }
             return '3px solid #f44336';
@@ -49,6 +49,6 @@ export class AnswerComponent extends Component<AnswerComponentProps, any> {
     }
 
     private isCorrectAnswer() {
-        return this.props.answer.id === this.props.correctAnswerId;
+        return this.props.correctAnswerIds.some(correctAnswerId => correctAnswerId === this.props.answer.id);
     }
 }

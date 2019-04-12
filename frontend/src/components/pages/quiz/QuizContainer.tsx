@@ -17,7 +17,7 @@ interface QuizContainerState {
     activeComponent: ActiveComponent,
     currentQuestion: Question | undefined,
     players: Player[],
-    correctAnswer: Answer | undefined,
+    correctAnswers: Answer[],
     ranking: Ranking | undefined,
     isFinalState: boolean
 }
@@ -95,7 +95,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         players: [],
         activeComponent: ActiveComponent.START_PAGE,
         currentQuestion: undefined,
-        correctAnswer: undefined,
+        correctAnswers: [],
         ranking: undefined,
         isFinalState: false
     };
@@ -136,7 +136,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
             });
             this.subscribeToQuizEvents();
         })
-        .catch(() => this.showErrorToast("There was no quiz found with this operator ID"));;
+            .catch(() => this.showErrorToast('There was no quiz found with this operator ID'));
     }
 
     subscribeToQuizEvents(): void {
@@ -171,7 +171,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 ...this.state,
                 currentQuestion: response.data.onNextQuestion,
                 activeComponent: ActiveComponent.QUESTION,
-                correctAnswer: undefined,
+                correctAnswers: [],
                 ranking: undefined
             });
         })
@@ -184,7 +184,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 joinId: this.state.joinId
             }
         }).subscribe((response: any) => {
-            this.setState({...this.state, correctAnswer: response.data.onQuestionTimeout});
+            this.setState({...this.state, correctAnswers: response.data.onQuestionTimeout});
         })
     }
 
@@ -226,7 +226,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                 if (!this.state.currentQuestion) {
                     throw new Error('Invalid state. Question is not defined');
                 }
-                const correctAnswerId = this.state.correctAnswer ? this.state.correctAnswer.id : undefined;
+                const correctAnswerIds: string[] = this.state.correctAnswers.map(answer => answer.id);
                 return (
                     <QuestionContainer
                         joinId={this.state.joinId}
@@ -234,7 +234,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                         operatorId={this.state.operatorId}
                         question={this.state.currentQuestion}
                         ranking={this.state.ranking}
-                        correctAnswerId={correctAnswerId}/>
+                        correctAnswerIds={correctAnswerIds}/>
                 );
         }
     }
@@ -242,7 +242,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     private showErrorToast(message: string) {
         this.props.toastManager.add(message, {
             appearance: 'error',
-            autoDismiss: true,
+            autoDismiss: true
         })
     }
 }

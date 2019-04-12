@@ -85,7 +85,7 @@ describe('launchNextQuestion', () => {
         jest.useFakeTimers();
 
         resolvers.Subscription.onQuestionTimeout.subscribe(undefined, {joinId: quiz.joinId}).next().then((payload: any) => {
-            expect(payload.value.onQuestionTimeout.answer).toBe('Tuesday');
+            expect(payload.value.onQuestionTimeout[0].answer).toBe('Tuesday');
             done();
         });
 
