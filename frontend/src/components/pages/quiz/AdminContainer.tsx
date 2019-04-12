@@ -212,7 +212,7 @@ class AdminContainer extends Component<any, any> {
                                                 <Textfield
                                                     onChange={e => this.handleAnswerChange(questionIndex, answerIndex, e.target)}
                                                     value={answer.answer}
-                                                    label={answerIndex === 0 ? `Correct answer to question ${questionIndex}` : `${answerIndex}. wrong answer to question ${questionIndex}`}
+                                                    label={answerIndex === 0 ? `Correct answer to question ${questionIndex + 1}` : `${answerIndex}. wrong answer to question ${questionIndex + 1}`}
                                                     floatingLabel/>
                                             </div>
                                         })
