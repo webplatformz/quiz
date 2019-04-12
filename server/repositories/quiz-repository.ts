@@ -47,10 +47,30 @@ class QuizRepository {
                 .withAnswer(`7'000'000`, true)
                 .withAnswer(`6'000'000`, false)
                 .withAnswer(`5'500'000`, false)
-                .withAnswer(`7'900'000`, true)
+                .withAnswer(`7'900'000`, false)
+                .build())
+            .question(new QuestionBuilder()
+                .withQuestion('Aus wie vielen Kräuter ist Jägermeister gemacht?')
+                .withAnswer(`12`, false)
+                .withAnswer(`16`, false)
+                .withAnswer(`27`, false)
+                .withAnswer(`56`, true)
+                .build())
+            .question(new QuestionBuilder()
+                .withQuestion('Wie viele Nachbarländer hat Bulgarien')
+                .withAnswer(`5`, true)
+                .withAnswer(`4`, false)
+                .withAnswer(`8`, false)
+                .withAnswer(`6`, false)
+                .build())
+            .question(new QuestionBuilder()
+                .withQuestion('In welcher europäischen Stadt gibt es die meisten Brücken?')
+                .withAnswer(`Venedig`, false)
+                .withAnswer(`Hamburg`, true)
+                .withAnswer(`Amsterdam`, false)
+                .withAnswer(`Bern`, false)
                 .build())
             .build();
-
 
         this.quizzes.push(campQuiz);
     }
