@@ -5,7 +5,8 @@ import JoinQuiz from './JoinQuiz';
 import CreateQuiz from './CreateQuiz';
 
 interface StartPageProps {
-    joinQuiz: (joinId: string, playerId: string, players: Player[]) => void
+    joinQuiz: (joinId: string, playerId: string, players: Player[]) => void;
+    joinId: string | undefined;
 }
 
 export class StartPage extends Component<StartPageProps, any> {
@@ -15,7 +16,7 @@ export class StartPage extends Component<StartPageProps, any> {
             <Card shadow={3} style={{flex: '1'}}>
                 <Grid>
                     <Cell col={6} >
-                        <JoinQuiz joinQuiz={this.props.joinQuiz}/>
+                        <JoinQuiz joinQuiz={this.props.joinQuiz} joinId={this.props.joinId}/>
                     </Cell>
                     <Cell col={6}>
                         <CreateQuiz/>

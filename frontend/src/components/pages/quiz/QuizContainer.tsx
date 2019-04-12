@@ -103,10 +103,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
     constructor(props: any) {
         super(props);
         this.joinQuiz = this.joinQuiz.bind(this);
-        const operatorId = this.props.match.params.operatorId;
-        if (operatorId) {
-            this.joinQuizAsOperator(operatorId);
-        }
+        this.parseRouteParams();
     }
 
     joinQuiz(joinId: string, playerId: string, players: Player[]) {
@@ -214,7 +211,7 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
         switch (this.state.activeComponent) {
             case ActiveComponent.START_PAGE:
                 return (
-                    <StartPage joinQuiz={this.joinQuiz}/>
+                    <StartPage joinQuiz={this.joinQuiz} joinId={this.state.joinId}/>
                 );
             case ActiveComponent.WAITING_ROOM:
                 return (
@@ -236,6 +233,18 @@ class QuizContainer extends Component<WithApolloClient<any>, QuizContainerState>
                         ranking={this.state.ranking}
                         correctAnswerId={correctAnswerId}/>
                 );
+        }
+    }
+
+    private parseRouteParams() {
+        const operatorId = this.props.match.params.operatorId;
+        if (operatorId) {
+            this.joinQuizAsOperator(operatorId);
+        }
+
+        const joinId = this.props.match.params.joinId;
+        if(joinId) {
+            this.state.joinId = joinId;
         }
     }
 

@@ -1,4 +1,15 @@
-export class WebsocketUtils {
+export class PathUtils {
+
+    public static joinUrlWithJoinId(joinId: string | undefined) {
+        const baseUrl = window.location.protocol +
+            window.location.hostname +
+            this.websocketPortWithColonByLocation();
+
+        if(joinId) {
+            return `${baseUrl}/${joinId}`
+        }
+        return baseUrl;
+    }
 
     public static websocketUrlByPath(path: string) {
         return this.websocketProtocolByLocation() +
