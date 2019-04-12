@@ -6,7 +6,7 @@ import {AnswerTimeout} from './AnswerTimeout';
 import {gql} from 'apollo-boost';
 import {withApollo, WithApolloClient} from 'react-apollo';
 import {Ranking} from "../../../../../server/domain/ranking";
-import {RankingContainer} from "./Ranking";
+import {RankingContainer} from "../quiz/Ranking";
 import {withToastManager} from 'react-toast-notifications';
 
 interface QuestionContainerProps {
