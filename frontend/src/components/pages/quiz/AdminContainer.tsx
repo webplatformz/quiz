@@ -4,7 +4,6 @@ import {gql} from "apollo-boost";
 import {withApollo} from "react-apollo";
 import {withRouter} from "react-router";
 import {QuestionInput} from "../../../../../server/domain/question-input";
-import {AnswerInput} from "../../../../../server/domain/answer-input";
 import {QuizInput} from "../../../../../server/domain/quiz-input";
 
 const UPDATE_QUIZ_MUTATION = gql`
@@ -63,7 +62,7 @@ class AdminContainer extends Component<any, any> {
         const questions: QuestionInput[] = [...this.state.questions].map(question => {
             return {
                 question: question.question,
-                answers: this.getShuffledAnswers(question.answers)
+                answers: question.answers
             }
         });
 
@@ -252,16 +251,6 @@ class AdminContainer extends Component<any, any> {
             quizReadyToJoin: true,
             joinId: response.data.joinAsOperator.joinId,
         }));
-    }
-
-    private getShuffledAnswers(answers: AnswerInput[]): AnswerInput[] {
-        const answerCopy = [...answers];
-        let shuffledAnswers: AnswerInput[] = [];
-        while (answerCopy.length > 0) {
-            const randomIndex = Math.round(Math.random() * (answerCopy.length - 1));
-            shuffledAnswers.push(answerCopy.splice(randomIndex, 1)[0]);
-        }
-        return shuffledAnswers;
     }
 }
 
