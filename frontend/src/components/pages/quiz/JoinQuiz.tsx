@@ -39,6 +39,10 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
         this.joinQuiz = this.joinQuiz.bind(this);
     }
 
+    isJoinDisabled(): boolean {
+        return this.state.joinId.trim().length === 0 || this.state.nickname.trim().length === 0;
+    }
+
     joinQuiz(): void {
         this.props.client.mutate({
             mutation: JOIN_MUTATION,
@@ -69,16 +73,19 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
             <div>
                 <h4 style={{marginTop: 0}}>Join Quiz</h4>
                 <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({...this.state, joinId: event.currentTarget.value})
+                    this.setState({...this.state, joinId: event.currentTarget.value.trim()})
                 }}
                            label="Quiz ID"
+                           error="ID is too long"
                            pattern="^[A-Za-z1-9]{0,6}$"/>
                 <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                    this.setState({...this.state, nickname: event.currentTarget.value})
+                    this.setState({...this.state, nickname: event.currentTarget.value.trim()})
                 }}
                            label="Nickname"/>
                 <br/>
-                <Button raised ripple colored style={{margin: '10px'}} onClick={this.joinQuiz}>Join</Button>
+                <Button raised ripple colored style={{margin: '10px'}}
+                        disabled={this.isJoinDisabled()}
+                        onClick={this.joinQuiz}>Join</Button>
             </div>
         );
     }
