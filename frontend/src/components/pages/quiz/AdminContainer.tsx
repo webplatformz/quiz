@@ -25,6 +25,7 @@ const START_QUIZ = gql`
     }
 `;
 
+// TODO: Clean up this code and split into sub components
 class AdminContainer extends Component<any, any> {
     state = {
         quizState: 'Quiz not created yet',
@@ -167,8 +168,6 @@ class AdminContainer extends Component<any, any> {
             question: questions[questionIndex].question,
             answers: answers
         };
-
-        target.value = '';
 
         this.setState({
             ...this.state,
