@@ -13,6 +13,6 @@ export class QuizState {
     }
 
     calculateBonus(currentTimestamp: number): number {
-        return 10 - ((currentTimestamp - this.questionStartTimestamp) / 1000);
+        return Math.ceil(10 - ((currentTimestamp - this.questionStartTimestamp) / 1000));
     }
 }

@@ -1,46 +1,54 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Answer} from '../../../../../server/domain/answer';
+import {Button} from 'react-mdl';
 
 interface AnswerComponentProps {
     answer: Answer;
     onClick: any;
-    state: AnswerComponentState,
+    correctAnswerId: string | undefined,
+    isSelected: boolean
 }
 
-export enum AnswerComponentState {
-    CHOSEN,
-    WRONG,
-    CORRECT,
-    NONE,
-}
+export class AnswerComponent extends Component<AnswerComponentProps, any> {
 
-export const AnswerComponent = (props: AnswerComponentProps) => {
-    return (<div style={
-        {
-            minWidth: '400px',
-            backgroundColor: getBackgroundColor(props.state),
-            padding: '40px',
-            fontSize: 'large',
-            margin: '20px',
-            cursor: 'pointer',
-            boxShadow: '10px 10px 5px 0px rgba(0,0,0,0.75)'
-        }}
-                 onClick={props.onClick}>
-        {props.answer.answer}
-    </div>)
-};
+    render() {
+        return (
+            <Button raised ripple style={{
+                backgroundColor: this.getBackgroundColor(),
+                border: this.getBorder(),
+                boxSizing: 'border-box',
+                fontSize: 'large',
+                margin: '16px 0',
+                padding: '12px 5px',
+                height: 'auto',
+                width: '100%',
+                cursor: 'pointer'
+            }}
+                    onClick={this.props.onClick}>
+                {this.props.answer.answer}
+            </Button>
+        );
+    }
 
-function getBackgroundColor(answerState: AnswerComponentState = AnswerComponentState.NONE): string {
-    switch (answerState) {
-        case AnswerComponentState.CHOSEN:
-            return 'lightseagreen';
-        case AnswerComponentState.CORRECT:
-            return 'lightgreen';
-        case AnswerComponentState.WRONG:
-            return 'red';
-        case AnswerComponentState.NONE:
-            return 'white';
-        default:
-            throw new Error(`Invalid state ${answerState}`)
+    private getBorder(): string {
+        if (this.props.isSelected) {
+            if(!this.props.correctAnswerId || this.isCorrectAnswer()) {
+                return '3px solid #3ea026';
+            }
+            return '3px solid #f44336';
+        }
+        return 'none';
+    }
+
+    private getBackgroundColor(): string {
+        if (this.isCorrectAnswer()) {
+            return 'rgba(7,182,49,0.6)';
+        } else {
+            return 'default';
+        }
+    }
+
+    private isCorrectAnswer() {
+        return this.props.answer.id === this.props.correctAnswerId;
     }
 }

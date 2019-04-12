@@ -6,15 +6,19 @@ class GameService {
 
     private activeGames: Map<string, Game> = new Map();
 
-    createOrGetGame(operatorId: string): Game {
-        let runningGame = this.getRunningGame(operatorId);
-        if (!runningGame) {
-            const quiz = QuizRepository.findQuizByOperatorId(operatorId);
-            if (!quiz) {
-                throw new Error(`No quiz configuration with operator ID ${operatorId} found.`);
-            }
+    createOrResetGame(operatorId: string) {
+        const quiz = QuizRepository.findQuizByOperatorId(operatorId);
+        if (!quiz) {
+            throw new Error(`No quiz configuration with operator ID ${operatorId} found.`);
+        }
 
-            runningGame = this.createGame(quiz);
+        return this.createGame(quiz);
+    }
+
+    getGame(operatorId: string): Game {
+        const runningGame = this.getRunningGame(operatorId);
+        if (!runningGame) {
+            throw new Error(`No game found for operator id ${operatorId}`)
         }
         return runningGame;
     }
@@ -36,7 +40,6 @@ class GameService {
     private getRunningGame(operatorId: string): Game | undefined {
         return this.activeGames.get(operatorId);
     }
-
 }
 
 

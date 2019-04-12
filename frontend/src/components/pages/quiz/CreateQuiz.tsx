@@ -86,6 +86,7 @@ class CreateQuiz extends Component<any, any> {
     }
 
     render() {
+        const operatorUrl = "operator/" + this.state.operatorId;
         return (
             <div>
                 <h4 style={{marginTop: 0}}>Create Quiz</h4>
@@ -93,7 +94,7 @@ class CreateQuiz extends Component<any, any> {
                     State: {this.state.quizState} <br/>
                     QuizId: {this.state.quizId} <br/>
                     Name: {this.state.quizName} <br/>
-                    OperatorId: {this.state.operatorId} <br/>
+                    OperatorId: <a href={operatorUrl}> {this.state.operatorId}</a> <br/>
                     JoinId: {this.state.joinId} <br/>
                 </p>
                 <Button raised ripple colored style={{ marginTop: '8px', marginBottom: '10px'}} onClick={this.createDummyQuiz}>Create</Button>

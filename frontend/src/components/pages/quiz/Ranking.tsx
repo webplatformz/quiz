@@ -1,10 +1,9 @@
 import React, {Component} from 'react'
-import {Player} from '../../../../../server/domain/player';
 import {List, ListItem, ListItemAction, ListItemContent} from 'react-mdl';
+import {Ranking} from "../../../../../server/domain/ranking";
 
 interface RankingProps {
-    players: Player[];
-    isFinalState: boolean;
+    ranking: Ranking
 }
 
 export class RankingContainer extends Component<RankingProps, any> {
@@ -12,17 +11,17 @@ export class RankingContainer extends Component<RankingProps, any> {
     render() {
         return (
             <div>
-                <div><h1>Ranking</h1></div>
+                <div><h5>Ranking</h5></div>
                 <List>
-                    <ListItem>
+                    <ListItem key="header">
                         <ListItemContent icon='format_list_numbered'><b>Name</b></ListItemContent>
                         <ListItemAction><b>Score</b></ListItemAction>
                     </ListItem>
                     {
-                        this.props.players
+                        this.props.ranking.players
                             .sort((a, b) => b.score - a.score)
                             .map((player, index) =>
-                                <ListItem>
+                                <ListItem key={player.id}>
                                     <ListItemContent icon={`filter_${index + 1}`}>{player.name}</ListItemContent>
                                     <ListItemAction>{player.score}</ListItemAction>
                                 </ListItem>

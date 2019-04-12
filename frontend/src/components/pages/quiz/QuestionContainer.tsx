@@ -1,77 +1,134 @@
 import React, {Component} from 'react'
 import {Question} from '../../../../../server/domain/question';
-import {Button} from 'react-mdl';
-import {AnswerComponent, AnswerComponentState} from './AnswerComponent';
+import {Button, Card} from 'react-mdl';
+import {AnswerComponent} from './AnswerComponent';
 import {AnswerTimeout} from './AnswerTimeout';
+import {gql} from 'apollo-boost';
+import {withApollo, WithApolloClient} from 'react-apollo';
+import {Ranking} from "../../../../../server/domain/ranking";
+import {RankingContainer} from "./Ranking";
 
 interface QuestionContainerProps {
+    joinId: string | undefined;
+    playerId: string | undefined;
+    operatorId: string | undefined;
     question: Question;
+    ranking: Ranking | undefined;
     correctAnswerId: string | undefined;
 }
 
 interface QuestionContainerState {
+    questionId: string | undefined;
     chosenAnswerId: string | undefined;
 }
 
-export class QuestionContainer extends Component<QuestionContainerProps, QuestionContainerState> {
+const ANSWER_QUESTION_MUTATION = gql`
+    mutation answerQuestion($joinId: String!, $playerId: ID!, $answerId: ID!){
+        answerQuestion(joinId: $joinId, playerId: $playerId, answerId: $answerId)
+    }
+`;
 
+const LAUNCH_QUESTION_MUTATION = gql`
+    mutation launchNextQuestion($operatorId: String!){
+        launchNextQuestion(operatorId: $operatorId)
+    }
+`;
+
+class QuestionContainer extends Component<WithApolloClient<QuestionContainerProps>, QuestionContainerState> {
     state = {
-        chosenAnswerId: undefined,
+        questionId: undefined,
+        chosenAnswerId: undefined
     };
 
+    constructor(props: WithApolloClient<QuestionContainerProps>) {
+        super(props);
+        this.launchNextQuestion = this.launchNextQuestion.bind(this);
+    }
+
+    componentDidUpdate(prevProps:any) : void {
+        if (prevProps.correctAnswerId && this.props.correctAnswerId === undefined) {
+            this.state.chosenAnswerId = undefined;
+        }
+    }
+
     render() {
+        let answers = this.renderAnswers();
+        let launchButton = this.renderLaunchButton();
+        let ranking = this.renderRanking();
+
         return (
-            <div>
-                <div><h1>{this.props.question.question}</h1></div>
-                <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
+            <Card shadow={3} style={{flex: '1', padding: '16px'}}>
+                <div style={{padding: '10px', borderRadius: '5px', border: '1px solid #aeaeae'}}>
+                    <h4 style={{margin: 0, textAlign: 'center'}}>{this.props.question.question}</h4>
+                </div>
+                {answers}
+                <AnswerTimeout questionId={this.props.question.id}/>
+                {ranking}
+                {launchButton}
+            </Card>
+        )
+    }
+
+    private renderAnswers() {
+        if (!this.props.operatorId) {
+            return (
+                <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between'}}>
                     {
                         this.props.question.answers
                             .map(answer => <AnswerComponent key={answer.id}
                                                             answer={answer}
-                                                            state={this.getAnswerState(answer.id)}
+                                                            correctAnswerId={this.props.correctAnswerId}
+                                                            isSelected={answer.id === this.state.chosenAnswerId}
                                                             onClick={this.answerQuestion.bind(this, answer.id)}/>)
                     }
                 </div>
-                <div style={{
-                    display: 'flex',
-                    marginTop: '20px',
-                    justifyContent: 'space-around'
-                }}>
-                    <AnswerTimeout/>
-                    <Button raised ripple onClick={this.launchNextQuestion}>
-                        Launch next question
-                    </Button>
-                </div>
-            </div>
-        )
+            );
+        }
     }
 
-    private getAnswerState(answerId: string): AnswerComponentState {
-        // Question timeout has been reached
-        if (this.props.correctAnswerId) {
-            if (this.state.chosenAnswerId && this.state.chosenAnswerId === answerId) {
-                return this.props.correctAnswerId === this.state.chosenAnswerId ? AnswerComponentState.CORRECT : AnswerComponentState.WRONG;
-            } else if(this.props.correctAnswerId === answerId){
-                return AnswerComponentState.WRONG;
-            }
-        } else {
-            if (this.state.chosenAnswerId && answerId === this.state.chosenAnswerId) {
-                return AnswerComponentState.CHOSEN;
-            } else {
-                return AnswerComponentState.NONE;
-            }
+    private renderLaunchButton() {
+        if(this.props.operatorId
+            && this.props.correctAnswerId
+            && this.props.ranking
+            && !this.props.ranking.isFinalState) {
+            return (
+                <Button raised ripple colored style={{marginTop: '24px'}} onClick={this.launchNextQuestion}>
+                    Launch next question
+                </Button>
+            );
         }
-        return AnswerComponentState.NONE;
+    }
 
+    private renderRanking() {
+        if(this.props.operatorId && this.props.ranking) {
+            return (
+                <RankingContainer ranking={this.props.ranking}/>
+            );
+        }
     }
 
     private answerQuestion(answerId: string) {
         if (!this.state.chosenAnswerId) {
             this.setState({...this.state, chosenAnswerId: answerId});
+            this.props.client.mutate({
+                mutation: ANSWER_QUESTION_MUTATION,
+                variables: {
+                    joinId: this.props.joinId,
+                    playerId: this.props.playerId,
+                    answerId: answerId
+                }
+            })
         }
     }
 
     private launchNextQuestion() {
-        console.log(`Launch next question`);
+        this.props.client.mutate({
+            mutation: LAUNCH_QUESTION_MUTATION,
+            variables: {
+                operatorId: this.props.operatorId
+            }
+        });
     }
 }
+
+export default withApollo(QuestionContainer);

@@ -3,24 +3,24 @@ import QuizRepository from '../repositories/quiz-repository';
 
 
 test('Game service throws error on non existing game', () => {
+    const result = () => GameService.getGame('unknownId');
 
-    const result = () => GameService.createOrGetGame('unknownId');
-
-    expect(result).toThrowError('No quiz configuration with operator ID unknownId found.');
+    expect(result).toThrowError('No game found for operator id unknownId');
 
 });
 
 test('Creates game if configuration exists', () => {
     const quiz = QuizRepository.createQuiz();
-    const game = GameService.createOrGetGame(quiz.operatorId);
+    GameService.createOrResetGame(quiz.operatorId);
+    const game = GameService.getGame(quiz.operatorId);
 
     expect(game).toBeDefined();
 });
 
 test('getRunningGameByJoinId should return game for given joinId', () => {
-
     const quiz = QuizRepository.createQuiz();
-    const game = GameService.createOrGetGame(quiz.operatorId);
+    GameService.createOrResetGame(quiz.operatorId);
+    const game = GameService.getGame(quiz.operatorId);
 
     const returnedGame = GameService.getRunningGameByJoinId(game.quiz.joinId);
 

@@ -57,6 +57,7 @@ describe('launchNextQuestion', () => {
                 ]
             }
         });
+        resolvers.Mutation.joinAsOperator(undefined, { operatorId: quiz.operatorId });
     });
 
     test('should return true if there is a question', () => {

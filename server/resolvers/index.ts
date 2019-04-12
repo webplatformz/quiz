@@ -30,7 +30,7 @@ export default {
             return GameService.getRunningGameByJoinId(input.joinId).joinAsPlayer(input.joinId, input.nickname);
         },
         joinAsOperator: (parent: any, {operatorId}: { operatorId: string }): QuizOperator => {
-            const game = GameService.createOrGetGame(operatorId);
+            const game = GameService.createOrResetGame(operatorId);
             game.registerOnPlayerJoined((quizStart: QuizStart) => {
                 pubsub.publish(Triggers.PlayerJoined, {
                     onPlayerJoined: quizStart
@@ -39,7 +39,7 @@ export default {
             return game.getQuizOperator();
         },
         launchNextQuestion: (parent: any, {operatorId}: { operatorId: string }): Boolean => {
-            const game = GameService.createOrGetGame(operatorId);
+            const game = GameService.getGame(operatorId);
             return game.publishNextQuestion((nextQuestion: Question) => {
                 pubsub.publish(Triggers.NextQuestion, {
                     onNextQuestion: nextQuestion,
