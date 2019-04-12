@@ -4,7 +4,7 @@ import PlayerList from './PlayerList';
 import {Card, CardText, CardTitle, Spinner, Button} from "react-mdl";
 import {gql} from "apollo-boost";
 import {withApollo, WithApolloClient} from "react-apollo";
-import {PathUtils} from "../PathUtils";
+import {PathUtils} from "../../../utils/PathUtils";
 const QRCode = require('qrcode.react');
 
 interface WaitingRoomProps {

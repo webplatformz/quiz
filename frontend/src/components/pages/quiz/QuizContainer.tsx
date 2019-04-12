@@ -2,9 +2,9 @@ import React, {Component} from 'react'
 import {Player} from '../../../../../server/domain/player';
 import {withApollo, WithApolloClient} from 'react-apollo';
 import {gql} from 'apollo-boost';
-import WaitingRoom from './WaitingRoom';
-import {StartPage} from './StartPage';
-import QuestionContainer from './QuestionContainer';
+import WaitingRoom from '../start/WaitingRoom';
+import {StartPage} from '../start/StartPage';
+import QuestionContainer from '../question/QuestionContainer';
 import {Question} from '../../../../../server/domain/question';
 import {Answer} from '../../../../../server/domain/answer';
 import {Ranking} from '../../../../../server/domain/ranking';

@@ -13,7 +13,7 @@ import 'react-mdl/extra/material.css';
 import 'react-mdl/extra/material.js';
 import {WebSocketLink} from "apollo-link-ws";
 import {getMainDefinition} from 'apollo-utilities';
-import {PathUtils} from "./components/pages/PathUtils";
+import {PathUtils} from "./utils/PathUtils";
 import {ToastProvider} from 'react-toast-notifications';
 
 const httpLink: ApolloLink = createHttpLink({
