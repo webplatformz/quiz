@@ -11,8 +11,9 @@ interface JoinQuizState {
 }
 
 interface JoinQuizProps {
-    joinQuiz: (joinId: string, playerId: string, players: Player[]) => void
-    toastManager: any
+    joinQuiz: (joinId: string, playerId: string, players: Player[]) => void;
+    joinId: string | undefined;
+    toastManager: any;
 }
 
 const JOIN_MUTATION = gql`
@@ -37,6 +38,10 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
     constructor(props: WithApolloClient<JoinQuizProps>) {
         super(props);
         this.joinQuiz = this.joinQuiz.bind(this);
+
+        if(this.props.joinId) {
+            this.state.joinId = this.props.joinId;
+        }
     }
 
     isJoinDisabled(): boolean {
@@ -68,6 +73,7 @@ class JoinQuiz extends Component<WithApolloClient<JoinQuizProps>, JoinQuizState>
                 <Textfield onChange={(event: React.FormEvent<HTMLInputElement>) => {
                     this.setState({...this.state, joinId: event.currentTarget.value.trim()})
                 }}
+                           value={this.state.joinId}
                            label="Quiz ID"
                            error="ID is too long"
                            pattern="^[A-Za-z1-9]{0,6}$"/>

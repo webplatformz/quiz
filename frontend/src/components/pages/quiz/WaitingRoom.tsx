@@ -4,6 +4,8 @@ import PlayerList from './PlayerList';
 import {Card, CardText, CardTitle, Spinner, Button} from "react-mdl";
 import {gql} from "apollo-boost";
 import {withApollo, WithApolloClient} from "react-apollo";
+import {PathUtils} from "../PathUtils";
+const QRCode = require('qrcode.react');
 
 interface WaitingRoomProps {
     players: Player[];
@@ -35,6 +37,7 @@ class WaitingRoom extends Component<WithApolloClient<WaitingRoomProps>, any> {
 
     render() {
         let startButton;
+        let qrCode;
         if(this.props.operatorId) {
             startButton = (
                 <Button raised ripple colored
@@ -43,13 +46,18 @@ class WaitingRoom extends Component<WithApolloClient<WaitingRoomProps>, any> {
                     Start Game
                 </Button>
             );
+
+            const joinUrl = PathUtils.joinUrlWithJoinId(this.props.joinId);
+            qrCode = <QRCode size={160} value={joinUrl} />;
         }
+
         return (
             <Card shadow={3} style={{width: '500px', margin: 'auto', padding: '10px'}}>
                 <CardTitle style={{textAlign: "center"}}>
                     <h4 style={{margin: 0}}>Quiz ID: {this.props.joinId}</h4> {startButton}
                 </CardTitle>
                 <CardText style={{paddingTop: 0, paddingBottom: 0}}>
+                    {qrCode}
                     <h5 style={{textAlign: 'left'}}>Players</h5>
                     <PlayerList players={this.props.players}/>
                     <div style={{marginBottom: '16px'}}>

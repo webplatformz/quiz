@@ -13,7 +13,7 @@ import 'react-mdl/extra/material.css';
 import 'react-mdl/extra/material.js';
 import {WebSocketLink} from "apollo-link-ws";
 import {getMainDefinition} from 'apollo-utilities';
-import {WebsocketUtils} from "./components/pages/WebsocketUtils";
+import {PathUtils} from "./components/pages/PathUtils";
 import {ToastProvider} from 'react-toast-notifications';
 
 const httpLink: ApolloLink = createHttpLink({
@@ -21,7 +21,7 @@ const httpLink: ApolloLink = createHttpLink({
 });
 
 const webSocketLink = new WebSocketLink({
-    uri: WebsocketUtils.websocketUrlByPath('/graphql'),
+    uri: PathUtils.websocketUrlByPath('/graphql'),
     options: {
         reconnect: true,
     }

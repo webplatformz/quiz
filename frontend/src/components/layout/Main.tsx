@@ -9,6 +9,7 @@ const Main = () => (
             <Route exact path='/' component={QuizContainer}/>
             <Route path='/operator/:operatorId' component={QuizContainer}/>
             <Route path='/admin/:quizId' component={AdminContainer}/>
+            <Route path='/:joinId' component={QuizContainer}/>
         </Switch>
     </main>
 );
