@@ -32,7 +32,16 @@ class AdminContainer extends Component<any, any> {
         quizName: '-',
         joinId: '-',
         operatorId: '-',
-        questions: [] as QuestionInput[],
+        questions: [{
+            question: '',
+            answers: [{
+                answer: '',
+                isCorrect: true
+            }, {
+                answer: '',
+                isCorrect: false
+            }]
+        }],
         quizReadyToJoin: false
     };
 
@@ -63,8 +72,6 @@ class AdminContainer extends Component<any, any> {
             questions: questions
         };
 
-        console.warn(quizInput);
-
         this.props.client.mutate({
             mutation: UPDATE_QUIZ_MUTATION,
             variables: {
@@ -85,11 +92,27 @@ class AdminContainer extends Component<any, any> {
         this.props.history.push(`/operator/${this.state.operatorId}`);
     }
 
+    addQuestionField() {
+        this.setState({
+            ...this.state,
+            questions: [...this.state.questions, {
+                question: '',
+                answers: [{
+                    answer: '',
+                    isCorrect: true
+                }, {
+                    answer: '',
+                    isCorrect: false
+                }]
+            }]
+        });
+    }
+
     handleQuestionChange(questionIndex: number, target: any) {
         const value = target.value;
 
         let questions = [...this.state.questions];
-        if (!value) {
+        if (!value && questionIndex > 0) {
             questions.splice(questionIndex, 1);
         } else {
             questions[questionIndex] = {
@@ -106,13 +129,32 @@ class AdminContainer extends Component<any, any> {
         });
     }
 
+    addAnswerField(questionIndex: number) {
+        let questions = [...this.state.questions];
+        let answers = [...questions[questionIndex].answers];
+        answers.push({
+            answer: '',
+            isCorrect: false
+        });
+
+        questions[questionIndex] = {
+            question: questions[questionIndex].question,
+            answers: answers
+        };
+
+        this.setState({
+            ...this.state,
+            questions: questions
+        });
+    }
+
     handleAnswerChange(questionIndex: number, answerIndex: number, target: any) {
         const value = target.value;
 
         let questions = [...this.state.questions];
         let answers = [...questions[questionIndex].answers];
 
-        if (!value) {
+        if (!value && answerIndex > 0) {
             answers.splice(answerIndex, 1);
         } else {
             answers[answerIndex] = {
@@ -174,25 +216,23 @@ class AdminContainer extends Component<any, any> {
                                             </div>
                                         })
                                     }
-                                    <div key={10 * questionIndex + question.answers.length}>
-                                        <Textfield
-                                            key="next"
-                                            onChange={e => this.handleAnswerChange(questionIndex, question.answers.length, e.target)}
-                                            label={`Question ${questionIndex + 1} - Answer ${question.answers.length + 1}`}
-                                            floatingLabel/>
+                                    <div>
+                                        <Button raised ripple style={{marginTop: '8px', marginBottom: '10px'}}
+                                                onClick={() => this.addAnswerField(questionIndex)}>Add answer
+                                            field</Button>
                                     </div>
                                 </div>
                             })
                         }
-                        <div key={this.state.questions.length}>
-                            <Textfield
-                                onChange={e => this.handleQuestionChange(this.state.questions.length, e.target)}
-                                label={`Question ${this.state.questions.length + 1}`}
-                                floatingLabel/>
+                        <div>
+                            <Button raised ripple style={{marginTop: '8px', marginBottom: '10px'}}
+                                    onClick={() => this.addQuestionField()}>Add question field</Button>
                         </div>
                     </div>
-                    <Button raised ripple colored style={{marginTop: '8px', marginBottom: '10px'}}
-                            onClick={this.submitQuestions}>Submit questions</Button>
+                    <div>
+                        <Button raised ripple colored style={{marginTop: '8px', marginBottom: '10px'}}
+                                onClick={this.submitQuestions}>Submit questions</Button>
+                    </div>
                     {content}
                 </Card>
             </div>
