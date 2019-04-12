@@ -5,8 +5,8 @@ import {AnswerComponent} from './AnswerComponent';
 import {AnswerTimeout} from './AnswerTimeout';
 import {gql} from 'apollo-boost';
 import {withApollo, WithApolloClient} from 'react-apollo';
-import {Ranking} from "../../../../../server/domain/ranking";
-import {RankingContainer} from "../quiz/Ranking";
+import {Ranking} from '../../../../../server/domain/ranking';
+import {RankingContainer} from '../quiz/Ranking';
 import {withToastManager} from 'react-toast-notifications';
 
 interface QuestionContainerProps {
@@ -47,9 +47,10 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         this.launchNextQuestion = this.launchNextQuestion.bind(this);
     }
 
-    componentDidUpdate(prevProps:any) : void {
+    componentDidUpdate(prevProps: QuestionContainerProps): void {
         if (prevProps.correctAnswerIds.length !== 0 && this.props.correctAnswerIds.length === 0) {
             this.state.chosenAnswerId = undefined;
+            this.setState({...this.state, chosenAnswerId: undefined})
         }
     }
 
@@ -81,6 +82,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
                                                             answer={answer}
                                                             correctAnswerIds={this.props.correctAnswerIds}
                                                             isSelected={answer.id === this.state.chosenAnswerId}
+                                                            isDisabled={this.state.chosenAnswerId !== undefined}
                                                             onClick={this.answerQuestion.bind(this, answer.id)}/>)
                     }
                 </div>
@@ -89,7 +91,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
     }
 
     private renderLaunchButton() {
-        if(this.props.operatorId
+        if (this.props.operatorId
             && this.props.correctAnswerIds.length !== 0
             && this.props.ranking
             && !this.props.ranking.isFinalState) {
@@ -102,7 +104,7 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
     }
 
     private renderRanking() {
-        if(this.props.operatorId && this.props.ranking) {
+        if (this.props.operatorId && this.props.ranking) {
             return (
                 <RankingContainer ranking={this.props.ranking}/>
             );
@@ -113,31 +115,31 @@ class QuestionContainer extends Component<WithApolloClient<QuestionContainerProp
         if (!this.state.chosenAnswerId) {
             this.setState({...this.state, chosenAnswerId: answerId});
             this.props.client.mutate({
-                    mutation: ANSWER_QUESTION_MUTATION,
-                    variables: {
-                        joinId: this.props.joinId,
-                        playerId: this.props.playerId,
-                        answerId: answerId
-                    }
-                })
-                .catch(() => this.showErrorToast("Sending your answer failed, please try again."));
+                mutation: ANSWER_QUESTION_MUTATION,
+                variables: {
+                    joinId: this.props.joinId,
+                    playerId: this.props.playerId,
+                    answerId: answerId
+                }
+            })
+                .catch(() => this.showErrorToast('Sending your answer failed, please try again.'));
         }
     }
 
     private launchNextQuestion() {
         this.props.client.mutate({
-                mutation: LAUNCH_QUESTION_MUTATION,
-                variables: {
-                    operatorId: this.props.operatorId
-                }
-            })
-            .catch(() => this.showErrorToast("Launching next question failed, please try again."));
+            mutation: LAUNCH_QUESTION_MUTATION,
+            variables: {
+                operatorId: this.props.operatorId
+            }
+        })
+            .catch(() => this.showErrorToast('Launching next question failed, please try again.'));
     }
 
     private showErrorToast(message: string) {
         this.props.toastManager.add(message, {
             appearance: 'error',
-            autoDismiss: true,
+            autoDismiss: true
         })
     }
 
