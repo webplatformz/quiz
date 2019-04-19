@@ -5,7 +5,7 @@
   "dependencies": {
     "@types/jest": "24.0.11",
     "@types/node": "11.13.3",
-    "@types/react": "16.8.13",
+    "@types/react": "16.8.14",
     "@types/react-dom": "16.8.4",
     "@types/react-mdl": "^1.7.27",
     "@types/react-router-dom": "^4.3.1",
