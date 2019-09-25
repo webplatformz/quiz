@@ -8,7 +8,7 @@
     "@types/react": "16.8.13",
     "@types/react-dom": "16.8.4",
     "@types/react-mdl": "^1.7.27",
-    "@types/react-router-dom": "^4.3.1",
+    "@types/react-router-dom": "^5.1.0",
     "apollo-boost": "^0.3.1",
     "apollo-link-ws": "^1.0.17",
     "graphql": "~14.2.1",
